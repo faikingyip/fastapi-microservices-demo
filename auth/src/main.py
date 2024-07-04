@@ -3,7 +3,13 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
+# from fastapi.staticfiles import StaticFiles
+
+from src.db.database import Base, engine
+from src.routers import (
+    rt_user,
+    rt_auth,
+)
 
 
 async def create_database_tables():
@@ -13,28 +19,20 @@ async def create_database_tables():
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    print("Startup database")
+    print("Startup things")
     await create_database_tables()
     yield
-    print("Shutdown database")
+    print("Shutdown things")
 
 
 app = FastAPI(title="Codefrantic API", lifespan=lifespan)
-# app.include_router(blog_get.router)
-# app.include_router(blog_post.router)
-# app.include_router(rt_auth.router)
-# app.include_router(rt_user.router)
-# app.include_router(rt_article.router)
-# app.include_router(rt_tech_diary_entry.router)
-# app.include_router(rt_file.router)
+app.include_router(rt_auth.router)
+app.include_router(rt_user.router)
 
-
-# Create schema if not exist
-# Base.metadata.create_all(engine)
 
 
 # Configure logging
-configure_logging()
+# configure_logging()
 
 allow_origins = ["http://localhost:5173"]
 app.add_middleware(
@@ -61,4 +59,4 @@ async def request_duration(request: Request, call_next):
     return response
 
 
-app.mount("/d_content", StaticFiles(directory="backend/d_content"), name="d_content")
+# app.mount("/d_content", StaticFiles(directory="src/d_content"), name="d_content")
