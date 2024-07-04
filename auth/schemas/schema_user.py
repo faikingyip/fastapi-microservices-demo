@@ -22,7 +22,7 @@ class SchemaUserDisplay(BaseModel):
     last_updated_on: datetime
 
     class Config:
-        orm_mode = True  # sqlalchemy will auto fit the data to this model.
+        from_attributes = True  # sqlalchemy will auto fit the data to this model.
 
 
 class SchemaChangePassword(BaseModel):

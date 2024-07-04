@@ -5,11 +5,14 @@ LABEL maintainer="codefrantic.com"
 # when our application is running.
 ENV PYTHONUNBUFFERED 1
 
+WORKDIR /app
+
 COPY ./requirements.txt /tmp/requirements.txt
 COPY ./requirements.dev.txt /tmp/requirements.dev.txt
-COPY ./app /app
-WORKDIR /app
-EXPOSE 8000
+
+ARG DEFAULT_PORT=8000
+ENV PORT $DEFAULT_PORT
+EXPOSE $PORT
 
 # dev is false by default. The compose.yaml file can override this.
 ARG DEV=false
@@ -40,9 +43,19 @@ RUN python -m venv /py && \
         --no-create-home \
         api-user
 
+
+COPY ./src /app/src
+
+
 ENV PATH="/py/bin:$PATH"
+# ENV PYTHONPATH=/app
+
+CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8000"]
 
 # Every time you run something from this immage,
 # it will run as the last user you logged in as.
 # So switch the user here.
 USER api-user
+
+
+

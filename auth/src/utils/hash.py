@@ -1,7 +1,9 @@
 from passlib.context import CryptContext
 
 pwd_cxt = CryptContext(schemes="bcrypt", deprecated="auto")
-def bcrypt(self, password: str):
+
+
+def bcrypt(password: str):
     """
     Performs bcrypt hash on the specified password string.
 
@@ -10,7 +12,7 @@ def bcrypt(self, password: str):
     return pwd_cxt.hash(password)
 
 
-def verify_bcrypt(self, password: str, hashed_password: str):
+def verify_bcrypt(password: str, hashed_password: str):
     """
     Checks if the plain password and the hashed password is a match.
 

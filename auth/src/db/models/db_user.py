@@ -8,11 +8,11 @@ class DbUser(DbBase):
 
     __tablename__ = "user"
 
-    username: Mapped[str] = mapped_column(String(300), nullable=False)
+    email: Mapped[str] = mapped_column(String(300), nullable=False)
     password_hash: Mapped[str] = mapped_column(String(200), nullable=False)
 
     # Add multiple composite unique constraints
     __table_args__ = (
-        UniqueConstraint("username"),
+        UniqueConstraint("email"),
         # Add more UniqueConstraint objects if needed
     )

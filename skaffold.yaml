@@ -1,0 +1,21 @@
+apiVersion: skaffold/v2beta21
+kind: Config
+metadata:
+  name: fastapi-microservices-demo
+deploy:
+  kubectl:
+    manifests:
+      - ./infra/k8s/*.yaml
+build:
+  local:
+    push: false
+  artifacts:
+    - image: faikingyip/fastapi-microservices-demo-auth
+      context: auth
+      docker:
+        dockerfile: Dockerfile
+      # sync:
+      #   manual:
+      #     - src: "src/**/*.py"
+      #       dest: .
+

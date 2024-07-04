@@ -3,13 +3,11 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-# from fastapi.staticfiles import StaticFiles
 
 from src.db.database import Base, engine
-from src.routers import (
-    rt_user,
-    rt_auth,
-)
+from src.routers import rt_user
+
+# from fastapi.staticfiles import StaticFiles
 
 
 async def create_database_tables():
@@ -20,15 +18,13 @@ async def create_database_tables():
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     print("Startup things")
-    await create_database_tables()
+    # await create_database_tables()
     yield
     print("Shutdown things")
 
 
 app = FastAPI(title="Codefrantic API", lifespan=lifespan)
-app.include_router(rt_auth.router)
 app.include_router(rt_user.router)
-
 
 
 # Configure logging
