@@ -1,14 +1,14 @@
-fastapi[all]
-sqlalchemy # database
+fastapi[all]==0.111.0
+SQLAlchemy==2.0.31
 # databases[asyncpg] # talk to the pg sql database asynchronously.
 # psycopg2 # database
 bcrypt==4.0.1 # jwt
-passlib # jwt
-python-jose
-aiofiles # File upload
-requests
-python-multipart
-python-dotenv # read env files
-pydantic
+passlib==1.7.4 # jwt
+python-jose==3.3.0
+aiofiles==24.1.0 # File upload
+requests==2.32.3
+python-dotenv==1.0.1 # read env files
+pydantic==2.8.2
+python-multipart==0.0.9
 sqlalchemy[asyncio]
-asyncpg
+asyncpg==0.29.0

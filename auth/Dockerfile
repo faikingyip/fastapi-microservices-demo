@@ -14,30 +14,13 @@ ARG DEFAULT_PORT=8000
 ENV PORT $DEFAULT_PORT
 EXPOSE $PORT
 
-# dev is false by default. The compose.yaml file can override this.
-ARG DEV=false
+RUN echo "PORT: $PORT"
 
-# 1) Use a venv to avoid conflicts within the docker
-# base image (i.e. in case we change the image).
-# 2) Create a restricted access user that only has
-# access to our application and not the rest of the
-# container. User does not have a home folder.
-# 3) postgresql-client is required for psycopg2 to work.
-# 4) build-base, postgresql-dev and musl-dev are needed
-# for psycopg2 to compile. We group them into the 
-# virtual dependency package with name tmp-build-deps so 
-# we can remove them once we have compiled psycopg2.
+
 RUN python -m venv /py && \
     /py/bin/pip install --upgrade pip && \
-    apk add --update --no-cache postgresql-client && \
-    apk add --update --no-cache --virtual .tmp-build-deps \
-        build-base postgresql-dev musl-dev && \
     /py/bin/pip install -r /tmp/requirements.txt && \
-    if [ "$DEV" = "true" ]; \
-        then /py/bin/pip install -r /tmp/requirements.dev.txt; \
-    fi && \
     rm -rf /tmp && \
-    apk del .tmp-build-deps && \
     adduser \
         --disabled-password \
         --no-create-home \
@@ -46,9 +29,7 @@ RUN python -m venv /py && \
 
 COPY ./src /app/src
 
-
 ENV PATH="/py/bin:$PATH"
-# ENV PYTHONPATH=/app
 
 CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8000"]
 
