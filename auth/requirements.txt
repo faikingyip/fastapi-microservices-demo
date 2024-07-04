@@ -1,0 +1,14 @@
+fastapi[all]
+sqlalchemy # database
+# databases[asyncpg] # talk to the pg sql database asynchronously.
+# psycopg2 # database
+bcrypt==4.0.1 # jwt
+passlib # jwt
+python-jose
+aiofiles # File upload
+requests
+python-multipart
+python-dotenv # read env files
+pydantic
+sqlalchemy[asyncio]
+asyncpg
