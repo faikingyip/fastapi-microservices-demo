@@ -9,3 +9,5 @@ uvicorn src.main:app --reload
 ##### Generate random SECRET_KEY for jwt authentication.
 
 openssl rand -hex 32
+
+

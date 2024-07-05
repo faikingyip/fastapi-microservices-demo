@@ -1,16 +1,32 @@
 from datetime import datetime
 from uuid import UUID
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, EmailStr, Field
+
+from src.constants.field_lengths import FieldLengths
 
 
 class SchemaUserCreate(BaseModel):
-    email: str = Field(description="Username", min_length=1, max_length=300)
-    password: str = Field(description="Password", min_length=1, max_length=30)
+    email: EmailStr = Field(
+        example="user@example.com",
+        description="Email",
+        min_length=1,
+        max_length=FieldLengths.EMAIL.value,
+    )
+    password: str = Field(
+        description="Password",
+        min_length=1,
+        max_length=30,
+    )
 
     model_config = {
         "json_schema_extra": {
-            "examples": [{"email": "user@example.com", "password": "passw0rd"}]
+            "examples": [
+                {
+                    "email": "user@example.com",
+                    "password": "passw0rd",
+                },
+            ]
         }
     }
 
@@ -22,10 +38,19 @@ class SchemaUserDisplay(BaseModel):
     last_updated_on: datetime
 
     class Config:
-        from_attributes = True  # sqlalchemy will auto fit the data to this model.
+        # sqlalchemy will auto fit the data to this model.
+        from_attributes = True
 
 
 # class SchemaChangePassword(BaseModel):
-#     new_password: str = Field(description="Password", min_length=1, max_length=30)
+#     new_password: str = Field(
+#         description="Password",
+#         min_length=1,
+#         max_length=30,
+#     )
 
-#     model_config = {"json_schema_extra": {"examples": [{"new_password": "passw0rd"}]}}
+#     model_config = {
+#         "json_schema_extra": {
+#             "examples": [{"new_password": "passw0rd"}],
+#         },
+#     }

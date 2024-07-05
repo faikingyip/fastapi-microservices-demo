@@ -1,50 +1,61 @@
 from uuid import UUID
 
-# from fastapi import Query
 from sqlalchemy import select
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
-
 from src.db.models.db_user import DbUser
-
-# from src.db.query_utils import apply_sorting_and_paging_to_list_query
-from src.ops.exceptions.ops_exceptions import (
-    CreateUserError,
-    GetUserByIdError,
-    GetUserByUsernameError,
-)
+from src.errors import AppServiceError
 from src.schemas.schema_user import SchemaUserCreate
 from src.utils import hash as h
 
 
-async def create_user(db: AsyncSession, request: SchemaUserCreate):
-    new_record = DbUser(email=request.email, password_hash=h.bcrypt(request.password))
+async def create_user(
+    db: AsyncSession,
+    request: SchemaUserCreate,
+):
+    new_record = DbUser(
+        email=request.email,
+        password_hash=h.bcrypt(request.password),
+    )
     try:
         db.add(new_record)
         await db.commit()
         await db.refresh(new_record)
     except SQLAlchemyError as sqlae:
         await db.rollback()
-        raise CreateUserError(sqlae) from sqlae
+        raise AppServiceError(
+            "Failed to create a user.",
+            {},
+        ) from sqlae
     return new_record
 
 
 async def get_user_by_id(db: AsyncSession, user_id: UUID):
     try:
         return (
-            await db.execute(select(DbUser).where(DbUser.id == user_id))
+            await db.execute(
+                select(DbUser).where(DbUser.id == user_id),
+            )
         ).scalar_one_or_none()
     except SQLAlchemyError as sqlae:
-        raise GetUserByIdError(sqlae) from sqlae
+        raise AppServiceError(
+            "Failed to get a user by id.",
+            {"user_id": user_id},
+        ) from sqlae
 
 
 async def get_user_by_email(db: AsyncSession, email: str):
     try:
         return (
-            await db.execute(select(DbUser).where(DbUser.email == email))
+            await db.execute(
+                select(DbUser).where(DbUser.email == email),
+            )
         ).scalar_one_or_none()
     except SQLAlchemyError as sqlae:
-        raise GetUserByUsernameError(sqlae) from sqlae
+        raise AppServiceError(
+            "Failed to get a user by email.",
+            {"email": email},
+        ) from sqlae
 
 
 # async def change_password(db: AsyncSession, user_id, request: SchemaChangePassword):

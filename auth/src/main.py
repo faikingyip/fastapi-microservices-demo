@@ -1,11 +1,14 @@
-import time
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI, Request
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from src.db.database import Base, engine
-from src.routers import rt_user
+from src.middlewares import mw_error_handler, mw_req_duration
+from src.routes import rt_signup
+
+# from src.routes import rt_user
+
 
 # from fastapi.staticfiles import StaticFiles
 
@@ -17,14 +20,15 @@ async def create_database_tables():
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    print("Startup things")
+    print("Starting up")
     # await create_database_tables()
     yield
-    print("Shutdown things")
+    print("Shutting down")
 
 
 app = FastAPI(title="Codefrantic API", lifespan=lifespan)
-app.include_router(rt_user.router)
+# app.include_router(rt_user.router)
+app.include_router(rt_signup.router)
 
 
 # Configure logging
@@ -39,20 +43,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.add_exception_handler(
+    Exception,
+    mw_error_handler.handle_error,
+)
 
-# Add middleware
+app.middleware("http")(mw_req_duration.request_duration)
+
 # app.add_middleware(LoggingMiddleware)
-
-
-# Add a middleware to take the duration of a request
-# and attach it to the header of the response.
-@app.middleware("http")
-async def request_duration(request: Request, call_next):
-    start_time = time.time()
-    response = await call_next(request)
-    duration = time.time() - start_time
-    response.headers["duration"] = str(duration)
-    return response
-
 
 # app.mount("/d_content", StaticFiles(directory="src/d_content"), name="d_content")

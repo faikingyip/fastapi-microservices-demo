@@ -5,7 +5,7 @@ metadata:
 deploy:
   kubectl:
     manifests:
-      - ./infra/k8s/*.yaml
+      - ./infra/kube/*.yaml
 build:
   local:
     push: false
@@ -14,8 +14,8 @@ build:
       context: auth
       docker:
         dockerfile: Dockerfile
-      # sync:
-      #   manual:
-      #     - src: "src/**/*.py"
-      #       dest: .
+      sync:
+        manual:
+          - src: "src/**/*.py"
+            dest: .
 
