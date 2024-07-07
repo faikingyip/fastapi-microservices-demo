@@ -2,7 +2,6 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-
 from src.db.database import Base, engine
 from src.middlewares import mw_error_handler, mw_req_duration
 from src.routes import rt_signup
@@ -21,7 +20,7 @@ async def create_database_tables():
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     print("Starting up")
-    # await create_database_tables()
+    await create_database_tables()
     yield
     print("Shutting down")
 
