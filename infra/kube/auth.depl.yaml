@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: auth
+  template:
+    metadata:
+      labels:
+        app: auth
+    spec:
+      containers:
+        - name: auth
+          image: faikingyip/fastapi-microservices-demo-auth:latest
+          env:
+            - name: DB_HOST
+              value: auth-pg-srv.default
+            - name: DB_PORT
+              value: "5432"
+            - name: DB_NAME
+              value: auth_srv
+            - name: DB_USER
+              value: auth_srv_user
+            - name: DB_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: auth-pg-secret
+                  key: POSTGRES_PASSWORD

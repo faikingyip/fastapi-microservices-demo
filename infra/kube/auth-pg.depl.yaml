@@ -10,7 +10,7 @@ spec:
       protocol: TCP
       port: 5432
       targetPort: 5432
-  type: LoadBalancer
+  type: ClusterIP
 
 ---
 apiVersion: apps/v1
@@ -32,11 +32,14 @@ spec:
           image: postgres:16.3-alpine3.20
           env:
             - name: POSTGRES_DB
-              value: mydatabase
+              value: auth_srv
             - name: POSTGRES_USER
-              value: myuser
+              value: auth_srv_user
             - name: POSTGRES_PASSWORD
-              value: mypassword
+              valueFrom:
+                secretKeyRef:
+                  name: auth-pg-secret
+                  key: POSTGRES_PASSWORD
           volumeMounts:
             - name: pgdata
               mountPath: /var/lib/postgresql/data

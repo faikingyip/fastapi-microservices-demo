@@ -14,9 +14,6 @@ ARG DEFAULT_PORT=8000
 ENV PORT $DEFAULT_PORT
 EXPOSE $PORT
 
-RUN echo "PORT: $PORT"
-
-
 RUN python -m venv /py && \
     /py/bin/pip install --upgrade pip && \
     /py/bin/pip install -r /tmp/requirements.txt && \
