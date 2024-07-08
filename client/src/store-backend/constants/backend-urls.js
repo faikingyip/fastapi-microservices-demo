@@ -1,6 +1,6 @@
 export const backendUrls = {
-  LOGIN: "/api/user/token/",
-  REFRESH: "/api/user/token/refresh/",
+  LOGIN: "/api/users/signin/",
+  REFRESH: "/api/users/refresh/",
   REGISTER: "/api/users/signup/",
   TECHS: "/api/techs/",
   EMPLOYER_REP: "/api/employer/",

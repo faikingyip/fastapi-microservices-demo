@@ -18,7 +18,7 @@ const getEmployerVacancies = async () => {
   return await api.get(backendUrls.EMPLOYER_VACANCIES);
 };
 
-const getVacancy = async ({id}) => {
+const getVacancy = async ({ id }) => {
   return await api.get(`${backendUrls.VACANCY}${id}/`);
 };
 const postCreateUserMe = async ({ payload }) => {
@@ -37,7 +37,7 @@ const patchEmployerRep = async ({ payload }) => {
   return await api.patch(backendUrls.PATCH_EMPLOYER_REP, payload);
 };
 
-const patchVacancy = async ({id, payload }) => {
+const patchVacancy = async ({ id, payload }) => {
   return await api.patch(`${backendUrls.PATCH_VACANCY}${id}/`, payload);
 };
 
@@ -46,7 +46,19 @@ const deleteTechKnowledge = async ({ id }) => {
 };
 
 const postLogin = async ({ payload }) => {
-  return await api.post(backendUrls.LOGIN, payload);
+  const params = new URLSearchParams();
+  params.append("username", payload.email);
+  params.append("password", payload.password);
+  return await api.post(backendUrls.LOGIN, params, {
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+  });
+  //   const response = await axios.post('/token', params, {
+  //     headers: {
+  //         'Content-Type': 'application/x-www-form-urlencoded'
+  //     }
+  // });
 };
 
 const postRefresh = async ({ payload }) => {

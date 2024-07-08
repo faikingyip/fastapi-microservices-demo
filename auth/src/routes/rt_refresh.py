@@ -17,11 +17,20 @@ async def refresh(
         raise HTTPException(status_code=401, detail=uae.message) from uae
 
     email = payload.get("sub")
-    access_token = oauth2.create_access_token(data={"sub": email})
-    # refresh_token = oauth2.create_refresh_token(data={"sub": email})
+    first_name = payload.get("first_name")
+    last_name = payload.get("last_name")
+    user_id = payload.get("user_id")
+    access_token = oauth2.create_access_token(
+        data={
+            "sub": email,
+            "email": email,
+            "first_name": first_name,
+            "last_name": last_name,
+            "user_id": user_id,
+        }
+    )
     return {
-        "access": access_token,
-        # "refresh": refresh_token,
-        # "token_type": "bearer",
+        "access_token": access_token,
+        "token_type": "bearer",
         "email": email,
     }

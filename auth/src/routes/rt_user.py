@@ -59,7 +59,7 @@ async def get_me(
     current_user: SchemaUserDisplay = Depends(oauth2.get_current_user),
 ):
     """Gets the currently authenticated user."""
-    item = await ops_user.get_user_by_id(db, current_user.id)
+    item = await ops_user.get_user_by_id(db, (await current_user).id)
     if not item:
         response.status_code = status.HTTP_404_NOT_FOUND
         raise create_item_not_found_exception()

@@ -29,3 +29,8 @@ spec:
                 secretKeyRef:
                   name: auth-pg-secret
                   key: POSTGRES_PASSWORD
+            - name: JWT_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: auth-srv-secret
+                  key: JWT_SECRET_KEY

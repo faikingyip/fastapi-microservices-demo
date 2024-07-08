@@ -24,9 +24,9 @@ build:
         dockerfile: Dockerfile
       sync:
         manual:
-          - src: "src/**/*.js"
+          - src: "**/*.js"
             dest: .
-          - src: "src/**/*.jsx"
+          - src: "**/*.jsx"
             dest: .
-          - src: "src/**/*.css"
+          - src: "**/*.css"
             dest: .

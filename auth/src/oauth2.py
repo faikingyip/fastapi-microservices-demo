@@ -1,4 +1,5 @@
 import datetime
+import os
 from datetime import timedelta
 from typing import Optional
 
@@ -12,7 +13,10 @@ from src.ops import ops_user
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/users/signin")
 
-SECRET_KEY = "d69816079fc14f65dfd3a94aa41739eef5590abc35e2c7961a0c50a02e9ff134"
+
+SECRET_KEY = os.environ.get(
+    "JWT_SECRET_KEY"
+)  # "d69816079fc14f65dfd3a94aa41739eef5590abc35e2c7961a0c50a02e9ff134"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 REFRESH_TOKEN_EXPIRE_MINUTES = 1440  # 24 hours

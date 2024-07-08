@@ -15,7 +15,7 @@ async def handle_error(request: Request, err: Exception):
         content={
             "detail": [
                 {
-                    "msg": "Something went wrongs.",
+                    "msg": "Something went wrong.",
                 }
             ]
         },
