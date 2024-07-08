@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from src.db.database import Base, engine
 from src.middlewares import mw_error_handler, mw_req_duration
-from src.routes import rt_signup
+from src.routes import rt_refresh, rt_signin, rt_signup
 
 # from src.routes import rt_user
 
@@ -28,12 +28,15 @@ async def lifespan(app: FastAPI):
 app = FastAPI(title="Codefrantic API", lifespan=lifespan)
 # app.include_router(rt_user.router)
 app.include_router(rt_signup.router)
+app.include_router(rt_signin.router)
+app.include_router(rt_refresh.router)
 
 
 # Configure logging
 # configure_logging()
 
-allow_origins = ["http://localhost:5173"]
+# allow_origins = ["http://localhost:5173"]
+allow_origins = ["*"]
 app.add_middleware(
     CORSMiddleware,
     allow_origins=allow_origins,

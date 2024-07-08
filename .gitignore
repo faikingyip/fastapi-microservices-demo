@@ -162,4 +162,4 @@ cython_debug/
 #.idea/
 
 
-*.prod.yaml
+*.secret.prod.yaml

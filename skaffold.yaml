@@ -18,4 +18,15 @@ build:
         manual:
           - src: "src/**/*.py"
             dest: .
-
+    - image: faikingyip/fastapi-microservices-demo-client
+      context: client
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: "src/**/*.js"
+            dest: .
+          - src: "src/**/*.jsx"
+            dest: .
+          - src: "src/**/*.css"
+            dest: .

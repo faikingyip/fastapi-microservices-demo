@@ -1,0 +1,38 @@
+.buttons {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: end;
+  gap: 1rem;
+}
+
+.field-detail {
+  margin-bottom: 2rem;
+}
+
+.field-heading {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom:1.5rem;
+}
+
+.action-button {
+  font-weight: 500;
+  padding: 0.1rem 0.3rem;
+}
+
+.field-name {
+  font-size: 1rem;
+  font-weight: bold;
+  color: rgb(114, 110, 177);
+}
+
+.field-value {
+  font-size: 0.9rem;
+  font-weight: bold;
+  color: rgb(7, 4, 56);
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+  
+}

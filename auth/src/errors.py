@@ -79,3 +79,29 @@ class BusinessValidationError(CustomError):
                 ]
             },
         }
+
+
+class UnauthorizedError(CustomError):
+    """Errors raised due to system errors such as a
+    loss in database connection, are raised using this
+    class."""
+
+    def __init__(self, message):
+        self.message = message
+        super().__init__()
+
+    @property
+    def status_code(self):
+        return 401
+
+    def serialize(self):
+        return {
+            "status_code": self.status_code,
+            "content": {
+                "detail": [
+                    {
+                        "msg": self.message,
+                    },
+                ]
+            },
+        }

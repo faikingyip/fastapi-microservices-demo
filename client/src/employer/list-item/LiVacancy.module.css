@@ -1,0 +1,18 @@
+.list-item-title {
+  font-size: 1rem;
+  font-weight: bold;
+  color: rgb(114, 110, 177);
+}
+
+
+.field-label {
+  font-size: 0.9rem;
+}
+
+.field-value {
+  font-size: 0.9rem;
+  font-weight: bold;
+  color: rgb(7, 4, 56);
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+}

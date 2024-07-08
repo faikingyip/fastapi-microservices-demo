@@ -1,0 +1,45 @@
+.buttons {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: start;
+  gap: 1rem;
+}
+
+.skill-detail {
+  margin-bottom: 2rem;
+}
+
+.skill-heading {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.skill-requirement-level {
+  margin-top: 1.5rem;
+}
+
+.skill-name {
+  font-size: 1rem;
+  font-weight: bold;
+  color: rgb(114, 110, 177);
+}
+
+.button {
+  font-weight: 500;
+  padding: 0.1rem 0.3rem;
+}
+
+.skill-label {
+  font-size: 0.9rem;
+}
+
+.skill-value {
+  font-size: 0.9rem;
+  font-weight: bold;
+  color: rgb(7, 4, 56);
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+}

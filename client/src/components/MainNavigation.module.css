@@ -1,0 +1,111 @@
+.header {
+  width: 100%;
+}
+
+.site-name {
+  font-size: 1.2rem;
+  font-weight: bold;
+  letter-spacing: 0.4rem;
+  text-shadow: 2px 2px 4px rgba(27, 14, 20, 0.3);
+  background: linear-gradient(0deg, #8774cc, #6e0ab1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text; /* For Firefox */
+  color: transparent; /* For Firefox */
+  text-align: center;
+  padding: 2rem 1rem 1rem 1rem;
+  
+
+  /* border:solid 1px black; */
+}
+
+
+.auth-options {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  /* text-decoration: underline; */
+  margin-bottom: 2rem;
+  text-align: center;
+
+  /* border:solid 1px black; */
+}
+
+.auth-options li a {
+  font-size: 1.2rem;
+  color: rgb(94, 7, 65);
+  /* background-color: rgb(236, 118, 177); */
+  padding: 0.5rem;
+  text-shadow: 2px 2px 4px rgba(27, 14, 20, 0.3);
+  /* border-radius: 5px; */
+  /* box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25); */
+}
+
+.auth-options li a.active {
+  color: rgb(110, 3, 250);
+  text-decoration: underline;
+  /* background-color: rgba(238, 191, 199, 0.6); */
+}
+
+.navbar {
+  background: linear-gradient(
+    to right top,
+    rgb(245, 7, 126),
+    rgb(238, 193, 216)
+  );
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  border: solid 1px black;
+}
+
+.logo-area {
+  display: flex;
+  justify-content: end;
+  align-items: center;
+  padding: 2rem 1rem 0 1rem;
+}
+
+.menu-items {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: start;
+  /* position: fixed; */
+  /* left: 0;
+    top: 0; */
+  gap: 2rem;
+  padding: 1rem 2rem 3rem 2rem;
+}
+
+.menu-item-header {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: rgb(54, 17, 102);
+  display: block;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  border-bottom: 2px solid rgb(53, 47, 49);
+}
+
+.no-underline {
+  border-bottom: none;
+}
+
+.menu-items li li {
+  margin-top: 0.5rem;
+}
+
+.menu-items li a {
+  font-size: 1.5rem;
+  color: rgb(81, 15, 167);
+  padding: 0.2rem 0.5rem;
+  border-radius: 5px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+
+.menu-items li a:hover,
+.menu-items li a:active {
+  color: rgb(51, 15, 97);
+  background-color: rgba(238, 191, 199, 0.6);
+}

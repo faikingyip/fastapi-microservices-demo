@@ -2,7 +2,6 @@ from datetime import datetime
 from uuid import UUID
 
 from pydantic import BaseModel, EmailStr, Field
-
 from src.constants.field_lengths import FieldLengths
 
 
@@ -19,12 +18,26 @@ class SchemaUserCreate(BaseModel):
         max_length=30,
     )
 
+    first_name: str = Field(
+        description="First name",
+        min_length=1,
+        max_length=50,
+    )
+
+    last_name: str = Field(
+        description="Last name",
+        min_length=1,
+        max_length=80,
+    )
+
     model_config = {
         "json_schema_extra": {
             "examples": [
                 {
                     "email": "user@example.com",
                     "password": "passw0rd",
+                    "first_name": "John",
+                    "last_name": "Doe",
                 },
             ]
         }
@@ -34,6 +47,8 @@ class SchemaUserCreate(BaseModel):
 class SchemaUserDisplay(BaseModel):
     id: UUID
     email: str
+    first_name: str
+    last_name: str
     created_on: datetime
     last_updated_on: datetime
 

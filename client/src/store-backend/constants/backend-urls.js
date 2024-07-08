@@ -1,0 +1,15 @@
+export const backendUrls = {
+  LOGIN: "/api/user/token/",
+  REFRESH: "/api/user/token/refresh/",
+  REGISTER: "/api/users/signup/",
+  TECHS: "/api/techs/",
+  EMPLOYER_REP: "/api/employer/",
+  EMPLOYER_VACANCIES: "/api/employer/vacancies/",
+  VACANCY: "/api/employer/vacancies/",
+  PATCH_EMPLOYER_REP: "/api/employer/",
+  PATCH_VACANCY: "/api/employer/vacancies/",
+  TECH_KNOWLEDGE: "/api/jobseeker/tech-knowledge/",
+  CREATE_TECH_KNOWLEDGE: "/api/jobseeker/tech-knowledge/",
+  DELETE_TECH_KNOWLEDGE: "/api/jobseeker/tech-knowledge/",
+  CREATE_VACANCY: "/api/employer/vacancies/",
+};

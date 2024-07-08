@@ -1,6 +1,5 @@
 from sqlalchemy import String, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column
-
 from src.constants.field_lengths import FieldLengths
 from src.db.models.db_base import DbBase
 
@@ -16,6 +15,16 @@ class DbUser(DbBase):
 
     password_hash: Mapped[str] = mapped_column(
         String(200),
+        nullable=False,
+    )
+
+    first_name: Mapped[str] = mapped_column(
+        String(50),
+        nullable=False,
+    )
+
+    last_name: Mapped[str] = mapped_column(
+        String(80),
         nullable=False,
     )
 

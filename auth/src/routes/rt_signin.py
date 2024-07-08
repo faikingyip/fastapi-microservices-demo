@@ -1,0 +1,32 @@
+from fastapi import APIRouter, Depends, HTTPException
+
+# from fastapi.security import OAuth2PasswordRequestForm
+from sqlalchemy.ext.asyncio import AsyncSession
+from src import oauth2
+from src.db.database import get_db
+from src.ops import ops_user
+from src.schemas.schema_signin import SchemaSignin
+from src.utils import hash as h
+
+router = APIRouter(prefix="/api/users", tags=["users"])
+
+
+@router.post("/signin")
+async def signin(
+    # response: Response,
+    request: SchemaSignin,
+    db: AsyncSession = Depends(get_db),
+):
+    user = await ops_user.get_user_by_email(db, request.email)
+    if not user:
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+    if not h.verify_bcrypt(request.password, user.password_hash):
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+    access_token = oauth2.create_access_token(data={"sub": user.email})
+    refresh_token = oauth2.create_refresh_token(data={"sub": user.email})
+    return {
+        "access": access_token,
+        "refresh": refresh_token,
+        # "token_type": "bearer",
+        "email": user.email,
+    }
