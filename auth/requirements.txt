@@ -12,3 +12,4 @@ pydantic==2.8.2
 python-multipart==0.0.9
 sqlalchemy[asyncio]
 asyncpg==0.29.0
+alembic==1.13.2

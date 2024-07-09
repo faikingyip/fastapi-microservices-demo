@@ -1,2 +1,4 @@
 pytest # Unit testing
+pytest-asyncio
 httpx
+aiosqlite

@@ -6,23 +6,23 @@
 -- psql -U admin -h localhost -p 5432 -d admin
 
 -- # Create the user if it doesn't already exist.
-CREATE USER codefranticuser WITH PASSWORD 'codefranticuser';
+CREATE USER auth_srv_user WITH PASSWORD 'auth_srv_user';
 
 -- # Terminate any existing connections to the database.
-SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = 'codefrantic';
+SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = 'auth_srv';
 
 -- # Drop the database.
 -- DROP DATABASE codefrantic;
 
 -- # Create a new database.
-CREATE DATABASE codefrantic
+CREATE DATABASE auth_srv
     WITH
-    OWNER = codefranticuser
+    OWNER = auth_srv_user
     ENCODING = 'UTF8';
 
 -- # Quit the current session and log in again, this time to the target database.
 -- \q
--- psql -U admin -h localhost -p 5432 -d codefrantic
+-- psql -U admin -h localhost -p 5432 -d auth_srv
 
 
 

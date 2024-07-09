@@ -3,6 +3,7 @@ from uuid import UUID
 from sqlalchemy import select
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
+
 from src.db.models.db_user import DbUser
 from src.errors import AppServiceError
 from src.schemas.schema_user import SchemaUserCreate
@@ -27,7 +28,7 @@ async def create_user(
         await db.rollback()
         raise AppServiceError(
             "Failed to create a user.",
-            {},
+            {"msg": str(sqlae)},
         ) from sqlae
     return new_record
 
