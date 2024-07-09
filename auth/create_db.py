@@ -1,10 +1,11 @@
 import asyncio
 
+from src.app import config_db, db_manager
 from src.db.database import Base
-from src.main import db_manager
 
 
 async def create_db():
+    config_db()
     async with db_manager.engine.begin() as conn:
         from src.db.models import db_user
 

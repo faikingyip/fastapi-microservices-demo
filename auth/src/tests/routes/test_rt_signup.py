@@ -12,8 +12,8 @@ import pytest
 from fastapi import status
 from httpx import AsyncClient
 
-from src.db.database import Base, db_manager
-from src.main import app
+from src.app import db_manager
+from src.db.database import Base
 
 
 async def setup():
@@ -27,34 +27,29 @@ async def teardown():
         await conn.run_sync(Base.metadata.drop_all)
 
 
-# @pytest.fixture(scope="function", autouse=True)
-# async def setup_and_teardown():
-#     await setup()
-#     yield
-#     await teardown()
+@pytest.fixture(scope="function", autouse=True)
+async def setup_and_teardown():
+    await setup()
+    yield
+    await teardown()
 
 
-@pytest.mark.asyncio
-async def test_signup_success():
-    try:
-        await setup()
-        payload = {
-            "email": "testuser@example.com",
-            "password": "securepassword",
-            "first_name": "Test",
-            "last_name": "User",
-        }
-        async with AsyncClient(
-            app=app, base_url="http://localhost:8000"
-        ) as async_client:
-            response = await async_client.post("/api/users/signup", json=payload)
-        assert response.status_code == status.HTTP_201_CREATED
-        data = response.json()
-        assert data["email"] == payload["email"]
-        assert data["first_name"] == payload["first_name"]
-        assert data["last_name"] == payload["last_name"]
-        assert "id" in data
-        assert "created_on" in data
-        assert "last_updated_on" in data
-    finally:
-        await teardown()
+@pytest.mark.anyio
+async def test_signup_success(async_client: AsyncClient):
+
+    payload = {
+        "email": "testuser@example.com",
+        "password": "securepassword",
+        "first_name": "Test",
+        "last_name": "User",
+    }
+
+    response = await async_client.post("/api/users/signup", json=payload)
+    assert response.status_code == status.HTTP_201_CREATED
+    data = response.json()
+    assert data["email"] == payload["email"]
+    assert data["first_name"] == payload["first_name"]
+    assert data["last_name"] == payload["last_name"]
+    assert "id" in data
+    assert "created_on" in data
+    assert "last_updated_on" in data

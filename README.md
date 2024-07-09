@@ -12,6 +12,7 @@ minikube service auth-srv
 - Kubernetes
 - Minikube
 - ingress nginx
+- alembic
 
 
 ##### Error handling throughout all services.

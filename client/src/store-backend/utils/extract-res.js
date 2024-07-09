@@ -3,7 +3,7 @@ export const createNormalizedResponseData = (data, status, errors) => {
 };
 
 export const extractAccessToken = (res) => {
-  const token = res.data.access;
+  const token = res.data.access_token;
   if (!token) {
     throw new Error("Unable to extract the access token from the response.");
   }
@@ -11,7 +11,7 @@ export const extractAccessToken = (res) => {
 };
 
 export const extractRefreshToken = (res) => {
-  const token = res.data.refresh;
+  const token = res.data.refresh_token;
   if (!token) {
     throw new Error("Unable to extract the refresh token from the response.");
   }  
