@@ -9,7 +9,6 @@ import os
 from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-
 from src.db.database import db_manager
 from src.middlewares import mw_error_handler, mw_req_duration
 from src.routes import rt_refresh, rt_signin, rt_signup, rt_user
@@ -46,7 +45,9 @@ def config_db():
     DATABASE_URL = (
         f"postgresql+asyncpg://{db_user}:{db_pass}@{db_host}:{db_port}/{db_name}"
     )
-    print(DATABASE_URL)
+
+    print(f"{env=}")
+    print(f"{DATABASE_URL=}")
     db_manager.setup(DATABASE_URL)
 
 

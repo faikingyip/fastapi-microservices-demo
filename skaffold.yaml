@@ -5,7 +5,23 @@ metadata:
 deploy:
   kubectl:
     manifests:
-      - ./infra/kube/*.yaml
+      # - ./infra/kube/*.yaml
+      - ./infra/kube/auth-pg.secret.dev.yaml
+      - ./infra/kube/auth-pg.depl.yaml      
+              
+      - ./infra/kube/auth.config.yaml
+      - ./infra/kube/auth.secret.dev.yaml
+      - ./infra/kube/auth.depl.yaml
+      - ./infra/kube/auth.srv.yaml
+      - ./infra/kube/auth.migration.yaml
+
+      - ./infra/kube/client.depl.yaml
+      - ./infra/kube/client.srv.yaml
+
+      - ./infra/kube/ingress.srv.yaml
+
+
+
   # hooks:
   #   after:
   #     - host:

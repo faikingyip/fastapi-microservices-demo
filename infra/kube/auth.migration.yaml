@@ -9,10 +9,23 @@ spec:
       - name: auth-pg-migration
         image: faikingyip/fastapi-microservices-demo-auth:latest
         command: ["alembic", "upgrade", "head"]
-        # env:
-        # - name: DATABASE_URL
-        #   valueFrom:
-        #     secretKeyRef:
-        #       name: auth-pg-secret
-        #       key: database-url
+        env:
+          - name: ENV
+            value: Production
+          # - name: DB_HOST
+          #   value: auth-pg-srv.default
+          # - name: DB_PORT
+          #   value: "5432"
+          # - name: DB_NAME
+          #   value: auth_srv
+          # - name: DB_USER
+          #   value: auth_srv_user
+          - name: DB_PASS
+            valueFrom:
+              secretKeyRef:
+                name: auth-pg-secret
+                key: POSTGRES_PASSWORD
+        envFrom:
+          - configMapRef:
+              name: auth-config
       restartPolicy: OnFailure

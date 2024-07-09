@@ -16,14 +16,8 @@ spec:
         - name: auth
           image: faikingyip/fastapi-microservices-demo-auth:latest
           env:
-            - name: DB_HOST
-              value: auth-pg-srv.default
-            - name: DB_PORT
-              value: "5432"
-            - name: DB_NAME
-              value: auth_srv
-            - name: DB_USER
-              value: auth_srv_user
+            - name: ENV
+              value: Production
             - name: DB_PASS
               valueFrom:
                 secretKeyRef:
@@ -34,3 +28,6 @@ spec:
                 secretKeyRef:
                   name: auth-srv-secret
                   key: JWT_SECRET_KEY
+          envFrom:
+            - configMapRef:
+                name: auth-config

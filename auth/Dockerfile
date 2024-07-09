@@ -10,6 +10,7 @@ WORKDIR /app
 COPY ./requirements.txt /tmp/requirements.txt
 COPY ./requirements.dev.txt /tmp/requirements.dev.txt
 COPY ./alembic.ini ./alembic.ini
+COPY ./alembic ./alembic
 
 ARG DEFAULT_PORT=8000
 ENV PORT $DEFAULT_PORT

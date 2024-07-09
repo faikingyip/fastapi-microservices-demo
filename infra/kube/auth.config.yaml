@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: auth-config
+data:
+  DB_HOST: auth-pg-srv.default
+  DB_PORT: "5432"
+  DB_NAME: auth_srv
+  DB_USER: auth_srv_user
