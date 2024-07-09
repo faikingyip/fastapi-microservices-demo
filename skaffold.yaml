@@ -1,4 +1,4 @@
-apiVersion: skaffold/v2beta21
+apiVersion: skaffold/v2beta22
 kind: Config
 metadata:
   name: fastapi-microservices-demo
@@ -6,6 +6,13 @@ deploy:
   kubectl:
     manifests:
       - ./infra/kube/*.yaml
+  # hooks:
+  #   after:
+  #     - host:
+  #         command: ["kubectl", "wait", "--for=condition=complete", "job/auth-migration"]
+  # annotations:
+  #   post-deploy:
+  #     - kubectl wait --for=condition=complete job/auth-migration
 build:
   local:
     push: false
@@ -30,3 +37,5 @@ build:
             dest: .
           - src: "**/*.css"
             dest: .
+
+

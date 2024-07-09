@@ -1,0 +1,18 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: auth-pg-migration
+spec:
+  template:
+    spec:
+      containers:
+      - name: auth-pg-migration
+        image: faikingyip/fastapi-microservices-demo-auth:latest
+        command: ["alembic", "upgrade", "head"]
+        # env:
+        # - name: DATABASE_URL
+        #   valueFrom:
+        #     secretKeyRef:
+        #       name: auth-pg-secret
+        #       key: database-url
+      restartPolicy: OnFailure
