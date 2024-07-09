@@ -12,7 +12,7 @@ CREATE USER auth_srv_user WITH PASSWORD 'auth_srv_user';
 SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = 'auth_srv';
 
 -- # Drop the database.
--- DROP DATABASE codefrantic;
+-- DROP DATABASE auth_srv;
 
 -- # Create a new database.
 CREATE DATABASE auth_srv

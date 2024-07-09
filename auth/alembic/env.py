@@ -1,6 +1,5 @@
 import asyncio
 from logging.config import fileConfig
-from pathlib import Path
 
 from sqlalchemy import pool
 from sqlalchemy.engine import Connection
@@ -9,15 +8,13 @@ from sqlalchemy.ext.asyncio import async_engine_from_config
 from alembic import context
 from src.db.database import Base
 from src.db.models import db_user
+from src.main import db_manager
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
 
-database_url = (
-    "postgresql+asyncpg://msdemouser:msdemouser@localhost:5432/auth_srv_test12345"
-)
-config.set_main_option("sqlalchemy.url", database_url)
+config.set_main_option("sqlalchemy.url", db_manager.db_url)
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.

@@ -1,29 +1,33 @@
-from contextlib import asynccontextmanager
+import os
 
+from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from src.db.database import Base, engine
+from src.db.database import db_manager
 from src.middlewares import mw_error_handler, mw_req_duration
 from src.routes import rt_refresh, rt_signin, rt_signup, rt_user
-
-# from src.routes import rt_user
-
 
 # from fastapi.staticfiles import StaticFiles
 
 
-# async def create_database_tables():
-#     async with engine.begin() as conn:
-#         await conn.run_sync(Base.metadata.create_all)
+def load_env():
+    # ENV is set in conftest.py
+    env = os.environ.get("ENV", "Development")
+    if env == "Testing":
+        load_dotenv(".env.test")
+    else:
+        load_dotenv(".env.dev")
 
 
-# @asynccontextmanager
-# async def lifespan(app: FastAPI):
-#     print("Starting up")
-#     await create_database_tables()
-#     yield
-#     print("Shutting down")
+load_env()
+db_host = os.environ.get("DB_HOST")
+db_port = os.environ.get("DB_PORT")
+db_name = os.environ.get("DB_NAME")
+db_user = os.environ.get("DB_USER")
+db_pass = os.environ.get("DB_PASS")
+DATABASE_URL = f"postgresql+asyncpg://{db_user}:{db_pass}@{db_host}:{db_port}/{db_name}"
+db_manager.setup(DATABASE_URL)
 
 
 app = FastAPI(title="FastAPI Microservices Demo")
