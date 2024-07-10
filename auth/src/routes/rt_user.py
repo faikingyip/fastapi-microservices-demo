@@ -1,6 +1,5 @@
-from fastapi import APIRouter, Depends, HTTPException, Response, status
+from fastapi import APIRouter, Depends, Response, status
 from sqlalchemy.ext.asyncio import AsyncSession
-
 from src import oauth2
 from src.db.database import get_db
 from src.errors import NotFoundError

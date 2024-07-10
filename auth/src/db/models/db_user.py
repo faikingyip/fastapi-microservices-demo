@@ -9,7 +9,7 @@ class DbUser(DbBase):
     __tablename__ = "user"
 
     email: Mapped[str] = mapped_column(
-        String(FieldLengths.EMAIL.value),
+        String(FieldLengths.USER__EMAIL.value),
         nullable=False,
     )
 

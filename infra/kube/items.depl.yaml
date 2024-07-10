@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: items-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: items
+  template:
+    metadata:
+      labels:
+        app: items
+    spec:
+      containers:
+        - name: items
+          image: faikingyip/fastapi-microservices-demo-items:latest
+          env:
+            - name: ENV
+              value: Production
+            - name: DB_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: items-pg-secret
+                  key: POSTGRES_PASSWORD
+            - name: JWT_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: items-srv-secret
+                  key: JWT_SECRET_KEY
+          envFrom:
+            - configMapRef:
+                name: items-config

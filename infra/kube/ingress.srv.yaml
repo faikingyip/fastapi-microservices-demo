@@ -19,6 +19,13 @@ spec:
                 name: auth-srv
                 port:
                   number: 8000
+          - path: /api/items/?(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: items-srv
+                port:
+                  number: 8001
           - path: /?(.*)
             pathType: ImplementationSpecific
             backend:

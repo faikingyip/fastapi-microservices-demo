@@ -1,0 +1,49 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: items-pg-srv
+spec:
+  selector:
+    app: items-pg
+  ports:
+    - name: items-pg
+      protocol: TCP
+      port: 5432
+      targetPort: 5432
+  type: ClusterIP
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: items-pg-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: items-pg
+  template:
+    metadata:
+      labels:
+        app: items-pg
+    spec:
+      containers:
+        - name: items-pg
+          image: postgres:16.3-alpine3.20
+          env:
+            - name: POSTGRES_DB
+              value: items_srv
+            - name: POSTGRES_USER
+              value: items_srv_user
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: items-pg-secret
+                  key: POSTGRES_PASSWORD
+          volumeMounts:
+            - name: pgdata
+              mountPath: /var/lib/postgresql/data
+      volumes:
+        - name: pgdata
+          hostPath:
+            path: /home/fai/hostdata/itemsdata

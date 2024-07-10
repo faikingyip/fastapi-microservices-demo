@@ -10,7 +10,7 @@ class SchemaUserCreate(BaseModel):
         example="user@example.com",
         description="Email",
         min_length=1,
-        max_length=FieldLengths.EMAIL.value,
+        max_length=FieldLengths.USER__EMAIL.value,
     )
     password: str = Field(
         description="Password",

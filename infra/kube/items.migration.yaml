@@ -1,0 +1,23 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: items-pg-migration
+spec:
+  template:
+    spec:
+      containers:
+      - name: items-pg-migration
+        image: faikingyip/fastapi-microservices-demo-items:latest
+        command: ["alembic", "upgrade", "head"]
+        env:
+          - name: ENV
+            value: Production
+          - name: DB_PASS
+            valueFrom:
+              secretKeyRef:
+                name: items-pg-secret
+                key: POSTGRES_PASSWORD
+        envFrom:
+          - configMapRef:
+              name: items-config
+      restartPolicy: OnFailure

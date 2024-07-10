@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: items-config
+data:
+  DB_HOST: items-pg-srv.default
+  DB_PORT: "5432"
+  DB_NAME: items_srv
+  DB_USER: items_srv_user

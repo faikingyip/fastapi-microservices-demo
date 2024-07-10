@@ -2,4 +2,5 @@ from enum import Enum
 
 
 class FieldLengths(Enum):
-    USER__EMAIL = 254
+    ITEM__TITLE = 254
+    ITEM__DESC = 511
