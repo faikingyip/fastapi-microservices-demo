@@ -1,11 +1,12 @@
 from uuid import UUID
 
+from asyncpg import UniqueViolationError
 from sqlalchemy import select
-from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.db.models.db_user import DbUser
-from src.errors import AppServiceError
+from src.errors import AppServiceError, BusinessValidationError
 from src.schemas.schema_user import SchemaUserCreate
 from src.utils import hash as h
 
@@ -24,6 +25,19 @@ async def create_user(
         db.add(new_record)
         await db.commit()
         await db.refresh(new_record)
+    except IntegrityError as ite:
+        await db.rollback()
+        cause = ite.orig.__cause__
+        if isinstance(cause, UniqueViolationError) and cause.detail.startswith(
+            "Key (email)"
+        ):
+            e = BusinessValidationError()
+            e.add_error("unique_email", "Email is already in use.", None)
+            raise e from ite
+        raise AppServiceError(
+            "Failed to create a user.",
+            {"msg": str(ite)},
+        ) from ite
     except SQLAlchemyError as sqlae:
         await db.rollback()
         raise AppServiceError(
@@ -43,7 +57,7 @@ async def get_user_by_id(db: AsyncSession, user_id: UUID):
     except SQLAlchemyError as sqlae:
         raise AppServiceError(
             "Failed to get a user by id.",
-            {"user_id": user_id},
+            {"msg": str(sqlae)},
         ) from sqlae
 
 
@@ -57,7 +71,7 @@ async def get_user_by_email(db: AsyncSession, email: str):
     except SQLAlchemyError as sqlae:
         raise AppServiceError(
             "Failed to get a user by email.",
-            {"email": email},
+            {"msg": str(sqlae)},
         ) from sqlae
 
 

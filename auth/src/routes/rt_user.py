@@ -1,9 +1,10 @@
-from fastapi import APIRouter, Depends, Response, status
+from fastapi import APIRouter, Depends, HTTPException, Response, status
 from sqlalchemy.ext.asyncio import AsyncSession
+
 from src import oauth2
 from src.db.database import get_db
+from src.errors import NotFoundError
 from src.ops import ops_user
-from src.routes.rt_exceptions import create_item_not_found_exception
 from src.schemas.schema_user import SchemaUserDisplay
 
 router = APIRouter(prefix="/api/users", tags=["users"])
@@ -61,8 +62,8 @@ async def get_me(
     """Gets the currently authenticated user."""
     item = await ops_user.get_user_by_id(db, (await current_user).id)
     if not item:
-        response.status_code = status.HTTP_404_NOT_FOUND
-        raise create_item_not_found_exception()
+        # response.status_code = status.HTTP_404_NOT_FOUND
+        raise NotFoundError("Not found")
     return item
 
 

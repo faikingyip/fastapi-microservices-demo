@@ -1,6 +1,6 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter
+
 from src import oauth2
-from src.errors import UnauthorizedError
 from src.schemas.schema_refresh import SchemaRefresh
 
 router = APIRouter(prefix="/api/users", tags=["users"])
@@ -11,10 +11,7 @@ async def refresh(
     # response: Response,
     request: SchemaRefresh,
 ):
-    try:
-        payload = oauth2.decode_refresh_token(request.refresh)
-    except UnauthorizedError as uae:
-        raise HTTPException(status_code=401, detail=uae.message) from uae
+    payload = oauth2.decode_refresh_token(request.refresh)
 
     email = payload.get("sub")
     first_name = payload.get("first_name")

@@ -7,6 +7,7 @@ from fastapi import Depends
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 from sqlalchemy.ext.asyncio import AsyncSession
+
 from src.db.database import get_db
 from src.errors import UnauthorizedError
 from src.ops import ops_user
@@ -76,7 +77,7 @@ def get_current_user(
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         email: str = payload.get("sub")
-        if email is None:
+        if not email:
             raise UnauthorizedError("Invalid access token")
         token_type = payload.get("token_type")
         if token_type != "access":

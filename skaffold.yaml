@@ -20,15 +20,11 @@ deploy:
 
       - ./infra/kube/ingress.srv.yaml
 
-
-
   # hooks:
   #   after:
   #     - host:
   #         command: ["kubectl", "wait", "--for=condition=complete", "job/auth-migration"]
-  # annotations:
-  #   post-deploy:
-  #     - kubectl wait --for=condition=complete job/auth-migration
+
 build:
   local:
     push: false

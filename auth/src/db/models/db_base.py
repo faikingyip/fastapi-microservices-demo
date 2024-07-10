@@ -27,26 +27,3 @@ class DbBase(Base):
         onupdate=func.now(),
         nullable=False,
     )
-
-    def has_changes(self, obj, comparison_keys):
-        """Returns True if the specified object has all the keys and that
-        the values of these keys are the same assigned to the Model, else False."""
-
-        self_dict = self.__dict__
-
-        for comparison_key in comparison_keys:
-            if comparison_key not in obj or obj[comparison_key] != self_dict.get(
-                comparison_key
-            ):
-                # Changes found.
-                return True
-
-        # No changes found.
-        return False
-
-    def assign_values(self, obj, keys):
-        """The value of each of the specified keys of this
-        model will be assigned the values of the specified object."""
-
-        for key in keys:
-            setattr(self, key, obj[key])

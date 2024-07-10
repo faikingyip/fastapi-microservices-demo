@@ -1,3 +1,9 @@
+"""Custom errors that will be handled by the middleware.
+These errors should not be caught by the calling code
+when raised. Instead, we let them propagate to the
+middleware, which can handle all types of CustomError
+generically."""
+
 from abc import ABC, abstractmethod
 
 
@@ -10,7 +16,7 @@ class CustomError(Exception, ABC):
         pass
 
     @abstractmethod
-    def serialize(self):
+    def detail(self):
         pass
 
 
@@ -28,18 +34,13 @@ class AppServiceError(CustomError):
     def status_code(self):
         return 500
 
-    def serialize(self):
-        return {
-            "status_code": self.status_code,
-            "content": {
-                "detail": [
-                    {
-                        "msg": self.message,
-                        "data": self.data,
-                    },
-                ]
+    def detail(self):
+        return [
+            {
+                "msg": self.message,
+                "data": self.data,
             },
-        }
+        ]
 
 
 class BusinessValidationError(CustomError):
@@ -70,21 +71,14 @@ class BusinessValidationError(CustomError):
     def status_code(self):
         return 400
 
-    def serialize(self):
-        return {
-            "status_code": self.status_code,
-            "content": {
-                "detail": [
-                    self.error_keys,
-                ]
-            },
-        }
+    def detail(self):
+        return [
+            self.error_keys,
+        ]
 
 
 class UnauthorizedError(CustomError):
-    """Errors raised due to system errors such as a
-    loss in database connection, are raised using this
-    class."""
+    """Errors raised due to resource unauthorized."""
 
     def __init__(self, message):
         self.message = message
@@ -94,14 +88,28 @@ class UnauthorizedError(CustomError):
     def status_code(self):
         return 401
 
-    def serialize(self):
-        return {
-            "status_code": self.status_code,
-            "content": {
-                "detail": [
-                    {
-                        "msg": self.message,
-                    },
-                ]
+    def detail(self):
+        return [
+            {
+                "msg": self.message,
             },
-        }
+        ]
+
+
+class NotFoundError(CustomError):
+    """Errors raised due to resource not found."""
+
+    def __init__(self, message):
+        self.message = message
+        super().__init__()
+
+    @property
+    def status_code(self):
+        return 404
+
+    def detail(self):
+        return [
+            {
+                "msg": self.message,
+            },
+        ]

@@ -1,8 +1,10 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
+
 from src import oauth2
 from src.db.database import get_db
+from src.errors import UnauthorizedError
 from src.ops import ops_user
 from src.utils import hash as h
 
@@ -25,9 +27,9 @@ async def signin(
 ):
     user = await ops_user.get_user_by_email(db, request.username)
     if not user:
-        raise HTTPException(status_code=401, detail="Invalid credentials")
+        raise UnauthorizedError("Invalid credentials")
     if not h.verify_bcrypt(request.password, user.password_hash):
-        raise HTTPException(status_code=401, detail="Invalid credentials")
+        raise UnauthorizedError("Invalid credentials")
     access_token = oauth2.create_access_token(
         data={
             "sub": user.email,
