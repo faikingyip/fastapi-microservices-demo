@@ -9,43 +9,6 @@ from src.schemas.schema_user import SchemaUserDisplay
 router = APIRouter(prefix="/api/users", tags=["users"])
 
 
-# @router.post(
-#     "/signup",
-#     status_code=status.HTTP_201_CREATED,
-#     summary="Register a user.",
-#     # response_description='The created user',
-#     # response_model=SchemaUserDisplay
-# )
-# async def signup(
-#     response: Response, request: SchemaUserCreate, db: AsyncSession = Depends(get_db)
-# ):
-#     # item = ops_user.signup(db, request)
-#     await ops_user.create_user(db, request)
-#     return Response(status_code=status.HTTP_201_CREATED)
-
-
-# @router.post("/signin")
-# async def signin(
-#     response: Response,
-#     request: OAuth2PasswordRequestForm = Depends(),
-#     db: AsyncSession = Depends(get_db),
-# ):
-#     user = await ops_user.get_user_by_email(db, request.email)
-#     if not user:
-#         raise create_item_not_found_exception(message="Invalid credentials")
-#     if not h.verify_bcrypt(request.password, user.password_hash):
-#         raise create_item_not_found_exception(message="Invalid credentials")
-#     access_token = oauth2.create_access_token(data={"sub": user.email})
-#     refresh_token = oauth2.create_refresh_token(data={"sub": user.email})
-
-#     return {
-#         "access": access_token,
-#         "refresh": refresh_token,
-#         "token_type": "bearer",
-#         "email": user.email,
-#     }
-
-
 @router.get(
     "/me",
     status_code=status.HTTP_200_OK,

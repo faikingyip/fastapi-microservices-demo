@@ -20,7 +20,6 @@ deploy:
       - ./infra/kube/items-pg.depl.yaml      
               
       - ./infra/kube/items.config.yaml
-      - ./infra/kube/items.secret.dev.yaml
       - ./infra/kube/items.depl.yaml
       - ./infra/kube/items.srv.yaml
       - ./infra/kube/items.migration.yaml

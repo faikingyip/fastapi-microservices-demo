@@ -9,18 +9,18 @@ from jose import JWTError, jwt
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.db.database import get_db
-from src.errors import UnauthorizedError
+from src.errors import AppServiceError, UnauthorizedError
 from src.ops import ops_user
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/users/signin")
 
-
-SECRET_KEY = os.environ.get(
-    "JWT_SECRET_KEY"
-)  # "d69816079fc14f65dfd3a94aa41739eef5590abc35e2c7961a0c50a02e9ff134"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 REFRESH_TOKEN_EXPIRE_MINUTES = 1440  # 24 hours
+
+
+def _get_secret_key():
+    return os.environ.get("JWT_SECRET_KEY")
 
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
@@ -33,7 +33,7 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
             minutes=ACCESS_TOKEN_EXPIRE_MINUTES
         )
     to_encode.update({"exp": expire, "token_type": "access"})
-    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    encoded_jwt = jwt.encode(to_encode, _get_secret_key(), algorithm=ALGORITHM)
     return encoded_jwt
 
 
@@ -47,16 +47,16 @@ def create_refresh_token(data: dict, expires_delta: Optional[timedelta] = None):
             minutes=REFRESH_TOKEN_EXPIRE_MINUTES
         )
     to_encode.update({"exp": expire, "token_type": "refresh"})
-    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    encoded_jwt = jwt.encode(to_encode, _get_secret_key(), algorithm=ALGORITHM)
     return encoded_jwt
 
 
 def decode_refresh_token(encoded_jwt):
     """Decodes the encoded_jwt using the secret key."""
     try:
-        payload = jwt.decode(encoded_jwt, SECRET_KEY, algorithms=[ALGORITHM])
+        payload = jwt.decode(encoded_jwt, _get_secret_key(), algorithms=[ALGORITHM])
         email = payload.get("sub")
-        if email is None:
+        if not email:
             raise UnauthorizedError("Invalid refresh token")
         token_type = payload.get("token_type")
         if token_type != "refresh":
@@ -75,7 +75,7 @@ def get_current_user(
     verifying the token."""
 
     try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        payload = jwt.decode(token, _get_secret_key(), algorithms=[ALGORITHM])
         email: str = payload.get("sub")
         if not email:
             raise UnauthorizedError("Invalid access token")
@@ -87,7 +87,10 @@ def get_current_user(
     except JWTError as jwt_err:
         raise UnauthorizedError("Invalid access token") from jwt_err
 
-    user = ops_user.get_user_by_email(db, email)
-    if user is None:
-        raise UnauthorizedError("Invalid access token")
-    return user
+    user_coroutine = ops_user.get_user_by_email(db, email)
+    if not user_coroutine:
+        raise AppServiceError(
+            "Expected to retrieve a valid user coroutine but this was not the case.",
+            {"msg": f"email={email}"},
+        )
+    return user_coroutine

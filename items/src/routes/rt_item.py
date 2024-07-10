@@ -1,12 +1,12 @@
 from enum import Enum
-from typing import List, Optional
+from typing import Optional
 
 from fastapi import APIRouter, Depends, Query, Response, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.db.database import get_db
 from src.ops import ops_item
-from src.schemas.schema_item import SchemaItemDisplay
+from src.schemas.schema_item import SchemaItemsDisplay
 
 router = APIRouter(prefix="/api/items", tags=["items"])
 
@@ -49,7 +49,8 @@ class ItemDisplaySortType(str, Enum):
     status_code=status.HTTP_200_OK,
     summary="Get the list of items.",
     response_description="The list of available items",
-    response_model=List[SchemaItemDisplay],
+    response_model=SchemaItemsDisplay,
+    # response_model=List[SchemaItemDisplay],
 )
 async def get_items(
     response: Response,
@@ -67,14 +68,15 @@ async def get_items(
     sort_type: ItemDisplaySortType = ItemDisplaySortType.title,
     db: AsyncSession = Depends(get_db),
 ):
-
     sort_by = "title"
     if sort_type == ItemDisplaySortType.title:
         sort_by = "title, description"
 
-    return await __get_items(
+    data = await __get_items(
         db, page_index=page_index, page_size=page_size, sort_by=sort_by
     )
+
+    return SchemaItemsDisplay(**data)
 
 
 async def __get_items(

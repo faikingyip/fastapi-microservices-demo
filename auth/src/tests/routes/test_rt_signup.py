@@ -1,17 +1,20 @@
+# Sign up success
 # Validation error on email address not provided.
 # Validation error on invalid email address format.
 # Validation error on email address too long.
 # Validation error on password not provided.
 # Validation error on password too long.
+# Validation error on first_name not provided.
+# Validation error on first_name too long.
+# Validation error on last_name not provided.
+# Validation error on last_name too long.
 # Validation error on email address already in use.
-# Internal server error on system errors, i.e. database connection.
 # Password is encrypted.
-
+# Internal server error on system errors, i.e. database connection.
 
 import pytest
 from fastapi import status
 from httpx import AsyncClient
-
 from src.app import db_manager
 from src.db.database import Base
 

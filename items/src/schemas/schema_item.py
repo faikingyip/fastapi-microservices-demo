@@ -1,5 +1,6 @@
 from datetime import datetime
 from decimal import Decimal
+from typing import List
 from uuid import UUID
 
 from pydantic import BaseModel
@@ -18,3 +19,11 @@ class SchemaItemDisplay(BaseModel):
     class Config:
         # sqlalchemy will auto fit the data to this model.
         from_attributes = True
+
+
+class SchemaItemsDisplay(BaseModel):
+    items: List[SchemaItemDisplay]
+    page_index: int
+    page_size: int
+    total_items: int
+    items_in_page: int
