@@ -80,7 +80,7 @@ async def expired_access_token():
 
 
 @pytest.fixture
-async def expired_auth_headers(access_token):
+async def expired_auth_headers(expired_access_token):
     """Provides a method to create multiple ite"""
 
     return {"Authorization": f"Bearer {expired_access_token}"}
