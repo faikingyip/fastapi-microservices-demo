@@ -71,7 +71,7 @@ async def test_create_fail_for_unauthenticated_user(
         "description": "Item A description",
         "price": 12.99,
     }
-    res = await async_client.post(LIST_URL, payload)
+    res = await async_client.post(LIST_URL, json=payload)
     assert res.status_code == status.HTTP_401_UNAUTHORIZED
 
 
@@ -87,7 +87,7 @@ async def test_create_success_for_authenticated_user(
         "description": random_max_length_desc,
         "price": 12.99,
     }
-    res = await async_client.post(LIST_URL, payload)
+    res = await async_client.post(LIST_URL, json=payload)
     assert res.status_code == status.HTTP_201_CREATED
     assert res.json()["id"]
     assert res.json()["created_on"]
@@ -112,7 +112,7 @@ async def test_create_fail_on_missing_title(
         "price": 12.99,
     }
 
-    res = await async_client.post(LIST_URL, payload)
+    res = await async_client.post(LIST_URL, json=payload)
     assert res.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
 
 
@@ -129,7 +129,7 @@ async def test_create_fail_on_empty_title(
         "price": 12.99,
     }
 
-    res = await async_client.post(LIST_URL, payload)
+    res = await async_client.post(LIST_URL, json=payload)
     assert res.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
 
 
@@ -147,7 +147,7 @@ async def test_create_fail_on_title_too_long(
         "price": 12.99,
     }
 
-    res = await async_client.post(LIST_URL, payload)
+    res = await async_client.post(LIST_URL, json=payload)
     assert res.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
 
 
@@ -163,7 +163,7 @@ async def test_create_fail_on_missing_description(
         "price": 12.99,
     }
 
-    res = await async_client.post(LIST_URL, payload)
+    res = await async_client.post(LIST_URL, json=payload)
     assert res.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
 
 
@@ -180,7 +180,7 @@ async def test_create_fail_on_empty_description(
         "price": 12.99,
     }
 
-    res = await async_client.post(LIST_URL, payload)
+    res = await async_client.post(LIST_URL, json=payload)
     assert res.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
 
 
@@ -198,7 +198,7 @@ async def test_create_fail_on_description_too_long(
         "price": 12.99,
     }
 
-    res = await async_client.post(LIST_URL, payload)
+    res = await async_client.post(LIST_URL, json=payload)
     assert res.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
 
 
@@ -215,7 +215,7 @@ async def test_create_fail_on_missing_price(
         "description": random_max_length_desc,
     }
 
-    res = await async_client.post(LIST_URL, payload)
+    res = await async_client.post(LIST_URL, json=payload)
     assert res.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
 
 
@@ -233,5 +233,5 @@ async def test_create_fail_on_negative_price(
         "price": -1,
     }
 
-    res = await async_client.post(LIST_URL, payload)
+    res = await async_client.post(LIST_URL, json=payload)
     assert res.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
