@@ -1,4 +1,5 @@
 # Create fail for unauthenticated user.
+# Create fail for expired access token user.
 # Create success for authenticated user.
 # Create fail on missing title.
 # Create fail on empty title.
@@ -7,15 +8,17 @@
 # Create fail on empty description.
 # Create fail on description too long.
 # Create fail on missing price.
-# Create fail on negative price.
+# Create fail on zero price.
 
 import random
 import string
+from uuid import uuid4
 
 import pytest
 from fastapi import status
 from httpx import AsyncClient
 
+from src import oauth2
 from src.common.crud import create_multiple
 from src.db.models.db_item import DbItem
 
@@ -34,6 +37,53 @@ async def create_items(db_session):
         )
 
     return _create_items
+
+
+@pytest.fixture
+async def access_token():
+    """Provides a method to create multiple ite"""
+
+    email = "user@example.com"
+    return oauth2.create_access_token(
+        data={
+            "sub": email,
+            "email": email,
+            "first_name": "Fname",
+            "last_name": "Lname",
+            "user_id": str(uuid4()),
+        }
+    )
+
+
+@pytest.fixture
+async def auth_headers(access_token):
+    """Provides a method to create multiple ite"""
+
+    return {"Authorization": f"Bearer {access_token}"}
+
+
+@pytest.fixture
+async def expired_access_token():
+    """Provides a method to create multiple ite"""
+
+    email = "user@example.com"
+    return oauth2.create_access_token(
+        data={
+            "sub": email,
+            "email": email,
+            "first_name": "Fname",
+            "last_name": "Lname",
+            "user_id": str(uuid4()),
+        },
+        expire_mins=-1,
+    )
+
+
+@pytest.fixture
+async def expired_auth_headers(access_token):
+    """Provides a method to create multiple ite"""
+
+    return {"Authorization": f"Bearer {expired_access_token}"}
 
 
 @pytest.fixture
@@ -71,23 +121,55 @@ async def test_create_fail_for_unauthenticated_user(
         "description": "Item A description",
         "price": 12.99,
     }
+
     res = await async_client.post(LIST_URL, json=payload)
+    assert res.status_code == status.HTTP_401_UNAUTHORIZED
+
+
+#
+@pytest.mark.anyio
+async def test_create_fail_for_expired_access_token_user(
+    async_client: AsyncClient,
+    expired_auth_headers,
+    random_max_length_title,
+    random_max_length_desc,
+):
+    """Create fail for expired access token user."""
+
+    payload = {
+        "title": random_max_length_title,
+        "description": random_max_length_desc,
+        "price": 12.99,
+    }
+
+    res = await async_client.post(
+        LIST_URL,
+        json=payload,
+        headers=expired_auth_headers,
+    )
     assert res.status_code == status.HTTP_401_UNAUTHORIZED
 
 
 @pytest.mark.anyio
 async def test_create_success_for_authenticated_user(
     async_client: AsyncClient,
+    auth_headers,
     random_max_length_title,
     random_max_length_desc,
 ):
     """Create success for authenticated user."""
+
     payload = {
         "title": random_max_length_title,
         "description": random_max_length_desc,
         "price": 12.99,
     }
-    res = await async_client.post(LIST_URL, json=payload)
+
+    res = await async_client.post(
+        LIST_URL,
+        json=payload,
+        headers=auth_headers,
+    )
     assert res.status_code == status.HTTP_201_CREATED
     assert res.json()["id"]
     assert res.json()["created_on"]
@@ -103,6 +185,7 @@ async def test_create_success_for_authenticated_user(
 @pytest.mark.anyio
 async def test_create_fail_on_missing_title(
     async_client: AsyncClient,
+    auth_headers,
     random_max_length_desc,
 ):
     """Create fail on missing title."""
@@ -112,13 +195,18 @@ async def test_create_fail_on_missing_title(
         "price": 12.99,
     }
 
-    res = await async_client.post(LIST_URL, json=payload)
+    res = await async_client.post(
+        LIST_URL,
+        json=payload,
+        headers=auth_headers,
+    )
     assert res.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
 
 
 @pytest.mark.anyio
 async def test_create_fail_on_empty_title(
     async_client: AsyncClient,
+    auth_headers,
     random_max_length_desc,
 ):
     """Create fail on empty title."""
@@ -129,13 +217,18 @@ async def test_create_fail_on_empty_title(
         "price": 12.99,
     }
 
-    res = await async_client.post(LIST_URL, json=payload)
+    res = await async_client.post(
+        LIST_URL,
+        json=payload,
+        headers=auth_headers,
+    )
     assert res.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
 
 
 @pytest.mark.anyio
 async def test_create_fail_on_title_too_long(
     async_client: AsyncClient,
+    auth_headers,
     random_max_length_title,
     random_max_length_desc,
 ):
@@ -147,13 +240,18 @@ async def test_create_fail_on_title_too_long(
         "price": 12.99,
     }
 
-    res = await async_client.post(LIST_URL, json=payload)
+    res = await async_client.post(
+        LIST_URL,
+        json=payload,
+        headers=auth_headers,
+    )
     assert res.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
 
 
 @pytest.mark.anyio
 async def test_create_fail_on_missing_description(
     async_client: AsyncClient,
+    auth_headers,
     random_max_length_title,
 ):
     """Create fail on missing description."""
@@ -163,13 +261,18 @@ async def test_create_fail_on_missing_description(
         "price": 12.99,
     }
 
-    res = await async_client.post(LIST_URL, json=payload)
+    res = await async_client.post(
+        LIST_URL,
+        json=payload,
+        headers=auth_headers,
+    )
     assert res.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
 
 
 @pytest.mark.anyio
 async def test_create_fail_on_empty_description(
     async_client: AsyncClient,
+    auth_headers,
     random_max_length_title,
 ):
     """Create fail on empty description."""
@@ -180,13 +283,18 @@ async def test_create_fail_on_empty_description(
         "price": 12.99,
     }
 
-    res = await async_client.post(LIST_URL, json=payload)
+    res = await async_client.post(
+        LIST_URL,
+        json=payload,
+        headers=auth_headers,
+    )
     assert res.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
 
 
 @pytest.mark.anyio
 async def test_create_fail_on_description_too_long(
     async_client: AsyncClient,
+    auth_headers,
     random_max_length_title,
     random_max_length_desc,
 ):
@@ -198,13 +306,18 @@ async def test_create_fail_on_description_too_long(
         "price": 12.99,
     }
 
-    res = await async_client.post(LIST_URL, json=payload)
+    res = await async_client.post(
+        LIST_URL,
+        json=payload,
+        headers=auth_headers,
+    )
     assert res.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
 
 
 @pytest.mark.anyio
 async def test_create_fail_on_missing_price(
     async_client: AsyncClient,
+    auth_headers,
     random_max_length_title,
     random_max_length_desc,
 ):
@@ -215,23 +328,32 @@ async def test_create_fail_on_missing_price(
         "description": random_max_length_desc,
     }
 
-    res = await async_client.post(LIST_URL, json=payload)
+    res = await async_client.post(
+        LIST_URL,
+        json=payload,
+        headers=auth_headers,
+    )
     assert res.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
 
 
 @pytest.mark.anyio
-async def test_create_fail_on_negative_price(
+async def test_create_fail_on_zero_price(
     async_client: AsyncClient,
+    auth_headers,
     random_max_length_title,
     random_max_length_desc,
 ):
-    """Create fail on negative price."""
+    """Create fail on zero price."""
 
     payload = {
         "title": random_max_length_title,
         "description": random_max_length_desc,
-        "price": -1,
+        "price": 0,
     }
 
-    res = await async_client.post(LIST_URL, json=payload)
+    res = await async_client.post(
+        LIST_URL,
+        json=payload,
+        headers=auth_headers,
+    )
     assert res.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
