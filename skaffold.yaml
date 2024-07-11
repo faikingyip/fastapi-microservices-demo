@@ -7,26 +7,27 @@ deploy:
     manifests:
       # - ./infra/kube/*.yaml
       - ./infra/kube/auth-pg.secret.dev.yaml
-      - ./infra/kube/auth-pg.depl.yaml      
-              
+      - ./infra/kube/auth-pg.depl.yaml
+
       - ./infra/kube/auth.config.yaml
       - ./infra/kube/auth.secret.dev.yaml
       - ./infra/kube/auth.depl.yaml
       - ./infra/kube/auth.srv.yaml
       - ./infra/kube/auth.migration.yaml
 
-
       - ./infra/kube/items-pg.secret.dev.yaml
-      - ./infra/kube/items-pg.depl.yaml      
-              
+      - ./infra/kube/items-pg.depl.yaml
+
       - ./infra/kube/items.config.yaml
       - ./infra/kube/items.depl.yaml
       - ./infra/kube/items.srv.yaml
       - ./infra/kube/items.migration.yaml
 
-
       - ./infra/kube/client.depl.yaml
       - ./infra/kube/client.srv.yaml
+
+      - ./infra/kube/rabbitmq.secret.dev.yaml
+      - ./infra/kube/rabbitmq.depl.yaml
 
       - ./infra/kube/ingress.srv.yaml
 
@@ -67,5 +68,3 @@ build:
             dest: .
           - src: "**/*.css"
             dest: .
-
-
