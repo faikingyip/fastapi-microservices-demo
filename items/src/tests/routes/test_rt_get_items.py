@@ -12,6 +12,8 @@ from httpx import AsyncClient
 from src.common.crud import create_multiple
 from src.db.models.db_item import DbItem
 
+LIST_URL = "/api/items/"
+
 
 @pytest.fixture
 async def create_items(db_session):
@@ -31,7 +33,7 @@ async def create_items(db_session):
 async def test_retrieve_success_for_empty_list(async_client: AsyncClient):
     """Retrieve success for empty list"""
 
-    res = await async_client.get("/api/items/")
+    res = await async_client.get(LIST_URL)
     assert res.status_code == status.HTTP_200_OK
     assert "items" in res.json()
     assert isinstance(res.json()["items"], list)
@@ -51,7 +53,7 @@ async def test_retrieve_success_for_non_empty_list(
     ]
     await create_items(items_data)
 
-    res = await async_client.get("/api/items/")
+    res = await async_client.get(LIST_URL)
     assert res.status_code == status.HTTP_200_OK
     assert "items" in res.json()
     assert isinstance(res.json()["items"], list)
@@ -80,9 +82,7 @@ async def test_retrieve_success_for_first_page_index_and_full_page_size(
     ]
     await create_items(items_data)
 
-    res = await async_client.get(
-        "/api/items/", params={"page_index": 0, "page_size": 5}
-    )
+    res = await async_client.get(LIST_URL, params={"page_index": 0, "page_size": 5})
     assert res.status_code == status.HTTP_200_OK
     assert len(res.json()["items"]) == 5
     assert res.json()["page_index"] == 0
@@ -109,9 +109,7 @@ async def test_retrieve_success_for_page_index_and_size(
     ]
     await create_items(items_data)
 
-    res = await async_client.get(
-        "/api/items/", params={"page_index": 1, "page_size": 5}
-    )
+    res = await async_client.get(LIST_URL, params={"page_index": 1, "page_size": 5})
     assert res.status_code == status.HTTP_200_OK
     assert len(res.json()["items"]) == 2
     assert res.json()["page_index"] == 1
@@ -139,7 +137,7 @@ async def test_retrieve_success_for_page_index_and_sort(
     await create_items(items_data)
 
     res = await async_client.get(
-        "/api/items/",
+        LIST_URL,
         params={
             "page_index": 0,
             "page_size": 5,
@@ -173,7 +171,7 @@ async def test_retrieve_failed_on_invalid_sort_type(
     await create_items(items_data)
 
     res = await async_client.get(
-        "/api/items/",
+        LIST_URL,
         params={
             "page_index": 0,
             "page_size": 5,

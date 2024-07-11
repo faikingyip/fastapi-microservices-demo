@@ -11,3 +11,4 @@ uvicorn src.main:app --reload
 openssl rand -hex 32
 
 
+##### Create requires an authenticated user.
