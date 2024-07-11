@@ -1,7 +1,7 @@
 from typing import Any, Dict
 
 from fastapi import Query
-from sqlalchemy import func, select
+from sqlalchemy import Uuid, func, select
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -66,3 +66,18 @@ async def get_objects(
         "total_items": total_items,
         "items_in_page": len(objects),
     }
+
+
+async def get_object(
+    db: AsyncSession,
+    query: Query,
+):
+    """Pass in a query to return a single object.
+    Query i.e. select(DbItem).where(DbItem.id == id)"""
+    try:
+        return (await db.execute(query)).scalar_one_or_none()
+    except SQLAlchemyError as sqlae:
+        raise AppServiceError(
+            "Failed to get an object.",
+            {"msg": str(sqlae)},
+        ) from sqlae

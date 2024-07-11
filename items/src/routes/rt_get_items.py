@@ -58,33 +58,6 @@ async def get_items(
     return SchemaItemsDisplay(**data)
 
 
-# @router.get(
-#     "/{id}",
-#     status_code=status.HTTP_200_OK,
-#     summary="Get by id",
-#     response_description="Get by id.",
-#     response_model=SchemaUserDisplay,
-# )
-# async def get_user_by_id(
-#     response: Response,
-#     id: UUID = Path(
-#         default=..., description="The id of the user"
-#     ),  # ... elipses indicates the parameter is required.
-#     db: AsyncSession = Depends(get_db),
-#     current_user: SchemaUserDisplay = Depends(oauth2.get_current_user),
-# ):
-#     # """
-#     # Gets the user with the specified id.
-
-#     # - **id** The user id
-#     # """
-#     item = await ops_user.get_user_by_id(db, id)
-#     if not item:
-#         response.status_code = status.HTTP_404_NOT_FOUND
-#         raise create_item_not_found_exception()
-#     return item
-
-
 # @router.delete(
 #     "/{id}", status_code=status.HTTP_204_NO_CONTENT, summary="Delete the user"
 # )

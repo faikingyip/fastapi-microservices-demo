@@ -2,11 +2,11 @@ from typing import Any, Dict
 
 from asyncpg import UniqueViolationError
 from fastapi import Query
-from sqlalchemy import select
+from sqlalchemy import Uuid, select
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.common.crud import get_objects
+from src.common.crud import get_object, get_objects
 from src.db.models.db_item import DbItem
 from src.errors import AppServiceError, BusinessValidationError
 from src.schemas.schema_item import SchemaItemCreate
@@ -52,3 +52,21 @@ async def get_items(
 ) -> Dict[str, Any]:
     query = select(DbItem)
     return await get_objects(DbItem, db, query, page_index, page_size, sort_by)
+
+
+# async def get_item(db: AsyncSession, id: Uuid):
+#     try:
+#         return (
+#             await db.execute(
+#                 select(DbItem).where(DbItem.id == id),
+#             )
+#         ).scalar_one_or_none()
+#     except SQLAlchemyError as sqlae:
+#         raise AppServiceError(
+#             "Failed to get a object by id.",
+#             {"msg": str(sqlae)},
+#         ) from sqlae
+
+
+async def get_item(db: AsyncSession, id: Uuid):
+    return get_object(db, select(DbItem).where(DbItem.id == id))
