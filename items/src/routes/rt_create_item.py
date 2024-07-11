@@ -20,6 +20,4 @@ async def create_item(
     db: AsyncSession = Depends(get_db),
     current_user=Depends(oauth2.get_user_from_access_token),
 ):
-    print("AAAAAAAAAAAAAAAAAAAa")
-    print(current_user)
     return await ops_item.create_item(db, request)
