@@ -40,13 +40,11 @@ async def create_items(db_session):
 async def random_max_length_title():
     """Provides a random title of max length allowed."""
 
-    return (
-        "".join(
-            random.choices(
-                string.ascii_letters,
-                k=254,
-            )
-        ),
+    return "".join(
+        random.choices(
+            string.ascii_letters,
+            k=254,
+        )
     )
 
 
@@ -54,13 +52,11 @@ async def random_max_length_title():
 async def random_max_length_desc():
     """Provides a random description of max length allowed."""
 
-    return (
-        "".join(
-            random.choices(
-                string.ascii_letters,
-                k=511,
-            )
-        ),
+    return "".join(
+        random.choices(
+            string.ascii_letters,
+            k=511,
+        )
     )
 
 
@@ -86,7 +82,6 @@ async def test_create_success_for_authenticated_user(
     random_max_length_desc,
 ):
     """Create success for authenticated user."""
-
     payload = {
         "title": random_max_length_title,
         "description": random_max_length_desc,
