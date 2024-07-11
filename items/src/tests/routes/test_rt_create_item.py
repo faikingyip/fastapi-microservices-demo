@@ -18,7 +18,7 @@ import pytest
 from fastapi import status
 from httpx import AsyncClient
 
-from src import oauth2
+from src.common import oauth2
 from src.common.crud import create_multiple
 from src.db.models.db_item import DbItem
 
