@@ -7,7 +7,7 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/users/signin")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="http://localhost:8000/api/users/signin")
 
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30

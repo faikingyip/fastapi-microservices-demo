@@ -69,4 +69,4 @@ async def get_items(
 
 
 async def get_item(db: AsyncSession, id: Uuid):
-    return get_object(db, select(DbItem).where(DbItem.id == id))
+    return await get_object(db, select(DbItem).where(DbItem.id == id))

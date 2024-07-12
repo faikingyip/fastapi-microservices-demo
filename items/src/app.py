@@ -12,7 +12,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from src.db.database import db_manager
 from src.middlewares import mw_error_handler, mw_req_duration
-from src.routes import rt_create_item, rt_get_items
+from src.routes import rt_create_item, rt_get_item, rt_get_items
 
 
 def config_db():
@@ -54,6 +54,7 @@ def config_db():
 
 app = FastAPI(title="FastAPI Microservices Demo - Items service")
 app.include_router(rt_get_items.router)
+app.include_router(rt_get_item.router)
 app.include_router(rt_create_item.router)
 
 
