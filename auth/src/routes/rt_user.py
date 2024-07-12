@@ -1,7 +1,8 @@
 from fastapi import APIRouter, Depends, Response, status
 from sqlalchemy.ext.asyncio import AsyncSession
+
 from src import oauth2
-from src.db.database import get_db
+from src.common.database import get_db
 from src.errors import NotFoundError
 from src.ops import ops_user
 from src.schemas.schema_user import SchemaUserDisplay

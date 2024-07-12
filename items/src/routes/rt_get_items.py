@@ -4,7 +4,7 @@ from typing import Optional
 from fastapi import APIRouter, Depends, Query, Response, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.db.database import get_db
+from src.common.database import get_db
 from src.ops import ops_item
 from src.schemas.schema_item import SchemaItemsDisplay
 

@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import appLogicAuth from "../app-logic/app-logic-auth";
 import authActions from "../store-localstorage/auth-actions";
 
-const getJobseekerName = () => {
+const getUserFullName = () => {
   let name = "";
   if (authActions.getAccessToken()) {
     const authDetails = authActions.getAuthDetails();
@@ -30,7 +30,7 @@ export default function MainNavigation() {
     <header className={`${classes.header}`}>
       <h1 className={`${classes["site-name"]}`}>
         {" "}
-        <NavLink to="/">Codelocks Recruitment</NavLink>
+        <NavLink to="/">Fai Yip's FastAPI Microservices Demo</NavLink>
       </h1>
 
       <ul className={`${classes["auth-options"]}`}>
@@ -66,82 +66,11 @@ export default function MainNavigation() {
               }
               to="/logout"
             >
-              {getJobseekerName()}
+              {getUserFullName()}
             </NavLink>
           </li>
         )}
       </ul>
-
-      {/* <nav className={`${classes.navbar}`}>
-        <div className={`${classes["logo-area"]}`}></div>
-        <ul className={`${classes["menu-items"]}`}>
-          <li>
-            <span
-              className={`${classes["menu-item-header"]} ${classes["no-underline"]}`}
-            >
-              &nbsp;
-            </span>
-            <ul>
-
-              <li>
-                <NavLink to="#">About us</NavLink>
-              </li>
-              <li>
-                <NavLink to="#">Contact</NavLink>
-              </li>
-            </ul>
-          </li> */}
-      {/* <li>
-            <NavLink to="/counter">Counter</NavLink>
-          </li> */}
-      {/* <li>
-            <span className={`${classes["menu-item-header"]}`}>Employers</span>
-            <ul>
-              <li>
-                <NavLink to="/">Tell us about a vacancy</NavLink>
-              </li>
-              <li>
-                <NavLink to="/">Search jobseekers</NavLink>
-              </li>
-            </ul>
-          </li>
-          <li>
-            <span className={`${classes["menu-item-header"]}`}>Jobseekers</span>
-            <ul>
-              <li>
-                <NavLink
-                  className={({ isActive }) =>
-                    isActive ? classes.active : undefined
-                  }
-                  to="/build-my-job-search-profile"
-                >
-                  Publish your job interests
-                </NavLink>
-              </li>
-              <li>
-                <NavLink
-                  className={({ isActive }) =>
-                    isActive ? classes.active : undefined
-                  }
-                  to="/search-jobs"
-                >
-                  Search jobs
-                </NavLink>
-              </li>
-              <li>
-                <NavLink
-                  className={({ isActive }) =>
-                    isActive ? classes.active : undefined
-                  }
-                  to="/set-job-alerts"
-                >
-                  Set up your job alerts
-                </NavLink>
-              </li>
-            </ul>
-          </li>
-        </ul>
-      </nav> */}
     </header>
   );
 }

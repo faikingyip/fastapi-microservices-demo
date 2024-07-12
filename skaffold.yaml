@@ -15,13 +15,21 @@ deploy:
       - ./infra/kube/auth.srv.yaml
       - ./infra/kube/auth.migration.yaml
 
-      - ./infra/kube/items-pg.secret.dev.yaml
-      - ./infra/kube/items-pg.depl.yaml
+      # - ./infra/kube/items-pg.secret.dev.yaml
+      # - ./infra/kube/items-pg.depl.yaml
 
-      - ./infra/kube/items.config.yaml
-      - ./infra/kube/items.depl.yaml
-      - ./infra/kube/items.srv.yaml
-      - ./infra/kube/items.migration.yaml
+      # - ./infra/kube/items.config.yaml
+      # - ./infra/kube/items.depl.yaml
+      # - ./infra/kube/items.srv.yaml
+      # - ./infra/kube/items.migration.yaml
+
+      - ./infra/kube/accounts-pg.secret.dev.yaml
+      - ./infra/kube/accounts-pg.depl.yaml
+
+      - ./infra/kube/accounts.config.yaml
+      - ./infra/kube/accounts.depl.yaml
+      - ./infra/kube/accounts.srv.yaml
+      - ./infra/kube/accounts.migration.yaml
 
       - ./infra/kube/client.depl.yaml
       - ./infra/kube/client.srv.yaml
@@ -48,8 +56,16 @@ build:
         manual:
           - src: "src/**/*.py"
             dest: .
-    - image: faikingyip/fastapi-microservices-demo-items
-      context: items
+    # - image: faikingyip/fastapi-microservices-demo-items
+    #   context: items
+    #   docker:
+    #     dockerfile: Dockerfile
+    #   sync:
+    #     manual:
+    #       - src: "src/**/*.py"
+    #         dest: .
+    - image: faikingyip/fastapi-microservices-demo-accounts
+      context: accounts
       docker:
         dockerfile: Dockerfile
       sync:

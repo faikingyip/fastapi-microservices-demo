@@ -15,8 +15,9 @@
 import pytest
 from fastapi import status
 from httpx import AsyncClient
+
 from src.app import db_manager
-from src.db.database import Base
+from src.common.database import Base
 
 
 async def setup():

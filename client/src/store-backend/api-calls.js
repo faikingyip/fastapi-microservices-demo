@@ -29,6 +29,10 @@ const postCreateTechKnowledge = async ({ payload }) => {
   return await api.post(backendUrls.CREATE_TECH_KNOWLEDGE, payload);
 };
 
+const postCreateTrans = async ({ payload }) => {
+  return await api.post(backendUrls.CREATE_TRANS, payload);
+};
+
 const postCreateVacancy = async ({ payload }) => {
   return await api.post(backendUrls.CREATE_VACANCY, payload);
 };
@@ -44,6 +48,11 @@ const patchVacancy = async ({ id, payload }) => {
 const deleteTechKnowledge = async ({ id }) => {
   return await api.delete(`${backendUrls.DELETE_TECH_KNOWLEDGE}${id}/`);
 };
+
+const getAccount = async () => {
+  return await api.get(backendUrls.ACCOUNT);
+};
+
 
 const postLogin = async ({ payload }) => {
   const params = new URLSearchParams();
@@ -79,6 +88,8 @@ const apiCalls = {
   deleteTechKnowledge,
   postLogin,
   postRefresh,
+  getAccount,
+  postCreateTrans,
 };
 
 export default apiCalls;

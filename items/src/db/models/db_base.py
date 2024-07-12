@@ -4,7 +4,8 @@ from uuid import UUID, uuid4
 from sqlalchemy import DateTime
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.sql import func
-from src.db.database import Base
+
+from src.common.database import Base
 
 # from sqlalchemy.ext.asyncio import AsyncAttrs
 

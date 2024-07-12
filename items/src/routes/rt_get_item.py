@@ -3,7 +3,7 @@ from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException, Path, Response, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.db.database import get_db
+from src.common.database import get_db
 from src.ops import ops_item
 from src.schemas.schema_item import SchemaItemDisplay
 

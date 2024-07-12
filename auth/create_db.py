@@ -1,7 +1,7 @@
 import asyncio
 
 from src.app import config_db, db_manager
-from src.db.database import Base
+from src.common.database import Base
 
 
 async def create_db():

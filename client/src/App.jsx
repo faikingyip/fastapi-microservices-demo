@@ -18,6 +18,7 @@ import PageEmployerRep from "./employer/pages/PageEmployerRep";
 import PageSubmitVacancy from "./employer/pages/PageSubmitVacancy";
 import PageEmployerVacancies from "./employer/pages/PageEmployerVacancies";
 import PageVacancyDetail from "./employer/pages/PageVacancyDetail";
+import PageMicroservicesDemo from "./microservices-demo/pages/PageMicroservicesDemo";
 
 function getRedirectUrlFromQueryParam({ request }, defaultRedirectUrl = null) {
   return (
@@ -66,6 +67,14 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute redirectUrl="/login?redirectUrl=/search-jobs">
             <PageSetJobAlerts />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "microservices-demo",
+        element: (
+          <ProtectedRoute redirectUrl="/login?redirectUrl=/microservices-demo">
+            <PageMicroservicesDemo />
           </ProtectedRoute>
         ),
       },

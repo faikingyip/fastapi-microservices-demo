@@ -7,7 +7,8 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 from sqlalchemy.ext.asyncio import AsyncSession
-from src.db.database import get_db
+
+from src.common.database import get_db
 from src.ops import ops_user
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/users/signin")

@@ -1,0 +1,49 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: accounts-pg-srv
+spec:
+  selector:
+    app: accounts-pg
+  ports:
+    - name: accounts-pg
+      protocol: TCP
+      port: 5432
+      targetPort: 5432
+  type: ClusterIP
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: accounts-pg-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: accounts-pg
+  template:
+    metadata:
+      labels:
+        app: accounts-pg
+    spec:
+      containers:
+        - name: accounts-pg
+          image: postgres:16.3-alpine3.20
+          env:
+            - name: POSTGRES_DB
+              value: accounts_srv
+            - name: POSTGRES_USER
+              value: accounts_srv_user
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: accounts-pg-secret
+                  key: POSTGRES_PASSWORD
+          volumeMounts:
+            - name: pgdata
+              mountPath: /var/lib/postgresql/data
+      volumes:
+        - name: pgdata
+          hostPath:
+            path: /home/fai/hostdata/accountsdata

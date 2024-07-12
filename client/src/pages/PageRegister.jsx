@@ -11,7 +11,7 @@ export default function PageRegister() {
           Register with us
         </h2>
         <p className={`section-pitch-text`}>
-          Make your next career move a smooth one.
+          IMPORTANT - DO NOT ENTER REAL DETAILS!
         </p>
         <FormRegister />
       </section>

@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: accounts-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: accounts
+  template:
+    metadata:
+      labels:
+        app: accounts
+    spec:
+      containers:
+        - name: accounts
+          image: faikingyip/fastapi-microservices-demo-accounts:latest
+          env:
+            - name: ENV
+              value: Production
+            - name: DB_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: accounts-pg-secret
+                  key: POSTGRES_PASSWORD
+            - name: JWT_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: auth-srv-secret
+                  key: JWT_SECRET_KEY
+          envFrom:
+            - configMapRef:
+                name: accounts-config
