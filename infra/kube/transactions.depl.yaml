@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: transactions-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: transactions
+  template:
+    metadata:
+      labels:
+        app: transactions
+    spec:
+      containers:
+        - name: transactions
+          image: faikingyip/fastapi-microservices-demo-transactions:latest
+          env:
+            - name: ENV
+              value: Production
+            - name: DB_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: transactions-pg-secret
+                  key: POSTGRES_PASSWORD
+            - name: JWT_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: auth-srv-secret
+                  key: JWT_SECRET_KEY
+          envFrom:
+            - configMapRef:
+                name: transactions-config

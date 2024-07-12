@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: transactions-config
+data:
+  DB_HOST: transactions-pg-srv.default
+  DB_PORT: "5432"
+  DB_NAME: transactions_srv
+  DB_USER: transactions_srv_user

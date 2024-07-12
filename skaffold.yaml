@@ -23,6 +23,15 @@ deploy:
       # - ./infra/kube/items.srv.yaml
       # - ./infra/kube/items.migration.yaml
 
+      - ./infra/kube/transactions-pg.secret.dev.yaml
+      - ./infra/kube/transactions-pg.depl.yaml
+
+      - ./infra/kube/transactions.config.yaml
+      - ./infra/kube/transactions.depl.yaml
+      - ./infra/kube/transactions.srv.yaml
+      - ./infra/kube/transactions.migration.yaml
+
+
       - ./infra/kube/accounts-pg.secret.dev.yaml
       - ./infra/kube/accounts-pg.depl.yaml
 
@@ -66,6 +75,14 @@ build:
     #         dest: .
     - image: faikingyip/fastapi-microservices-demo-accounts
       context: accounts
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: "src/**/*.py"
+            dest: .
+    - image: faikingyip/fastapi-microservices-demo-transactions
+      context: transactions
       docker:
         dockerfile: Dockerfile
       sync:

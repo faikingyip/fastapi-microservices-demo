@@ -1,0 +1,23 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: transactions-pg-migration
+spec:
+  template:
+    spec:
+      containers:
+      - name: transactions-pg-migration
+        image: faikingyip/fastapi-microservices-demo-transactions:latest
+        command: ["alembic", "upgrade", "head"]
+        env:
+          - name: ENV
+            value: Production
+          - name: DB_PASS
+            valueFrom:
+              secretKeyRef:
+                name: transactions-pg-secret
+                key: POSTGRES_PASSWORD
+        envFrom:
+          - configMapRef:
+              name: transactions-config
+      restartPolicy: OnFailure

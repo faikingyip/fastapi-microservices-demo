@@ -2,7 +2,6 @@ from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, Path, Response, status
 from sqlalchemy.ext.asyncio import AsyncSession
-
 from src.common.database import get_db
 from src.ops import ops_item
 from src.schemas.schema_item import SchemaItemDisplay
@@ -20,7 +19,7 @@ router = APIRouter(prefix="/api/items", tags=["items"])
 async def get_item(
     response: Response,
     id: UUID = Path(
-        default=..., description="The id of the user"
+        default=..., description="The id of the item"
     ),  # ... elipses indicates the parameter is required.
     db: AsyncSession = Depends(get_db),
     # current_user=Depends(oauth2.get_user_from_access_token),

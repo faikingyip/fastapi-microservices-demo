@@ -26,6 +26,20 @@ spec:
                 name: items-srv
                 port:
                   number: 8001
+          - path: /api/accounts/?(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: accounts-srv
+                port:
+                  number: 8002
+          - path: /api/transactions/?(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: transactions-srv
+                port:
+                  number: 8003
           - path: /?(.*)
             pathType: ImplementationSpecific
             backend:

@@ -12,7 +12,7 @@ COPY ./requirements.dev.txt /tmp/requirements.dev.txt
 COPY ./alembic.ini ./alembic.ini
 COPY ./alembic ./alembic
 
-ARG DEFAULT_PORT=8002
+ARG DEFAULT_PORT=8003
 ENV PORT $DEFAULT_PORT
 EXPOSE $PORT
 
@@ -30,7 +30,7 @@ COPY ./src /app/src
 
 ENV PATH="/py/bin:$PATH"
 
-CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8002"]
+CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8003"]
 
 # Every time you run something from this immage,
 # it will run as the last user you logged in as.
