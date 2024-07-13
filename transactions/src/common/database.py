@@ -17,7 +17,7 @@ class DbManager:
 
         self.engine = create_async_engine(
             self.db_url,
-            echo=True,
+            # echo=True,
         )
 
         self.SessionLocal = async_sessionmaker(

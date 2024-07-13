@@ -11,7 +11,7 @@ class DbTransaction(DbBase):
 
     __tablename__ = "transaction"
 
-    user_id: Mapped[UUID] = mapped_column(nullable=False)
+    user_id: Mapped[UUID] = mapped_column(nullable=False, index=True)
 
     amount: Mapped[Decimal] = mapped_column(
         Numeric(precision=10, scale=2),
@@ -21,6 +21,6 @@ class DbTransaction(DbBase):
     last_trans_id: Mapped[UUID] = mapped_column(nullable=False)
 
     __table_args__ = (
-        UniqueConstraint("user_id"),
+        UniqueConstraint("last_trans_id"),
         # Add more UniqueConstraint objects if needed
     )

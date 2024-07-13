@@ -14,11 +14,11 @@ router = APIRouter(prefix="/api/transactions", tags=["transactions"])
 class TransactionDisplaySortTypes(str, Enum):
     """Defines the available sort types that can be used."""
 
-    DATE_CREATED = "date_created"
+    Created_on = "created_on"
 
 
 transaction_sort_type_map = {
-    TransactionDisplaySortTypes.DATE_CREATED: "date_created desc",
+    TransactionDisplaySortTypes.Created_on: "created_on desc",
 }
 
 
@@ -42,13 +42,13 @@ async def get_transactions(
         ge=1,
         le=100,
     ),
-    sort_type: TransactionDisplaySortTypes = TransactionDisplaySortTypes.DATE_CREATED,
+    sort_type: TransactionDisplaySortTypes = TransactionDisplaySortTypes.Created_on,
     db: AsyncSession = Depends(get_db),
 ):
     sort_by = (
         transaction_sort_type_map[sort_type]
         if sort_type
-        else transaction_sort_type_map[TransactionDisplaySortTypes.DATE_CREATED]
+        else transaction_sort_type_map[TransactionDisplaySortTypes.Created_on]
     )
 
     data = await ops_transaction.get_transactions(

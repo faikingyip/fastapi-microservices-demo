@@ -14,38 +14,56 @@ from src.schemas.schema_transaction import SchemaTransactionCreate
 
 async def create_transaction(
     db: AsyncSession,
+    user_id,
     request: SchemaTransactionCreate,
 ):
-    # new_record = DbTransaction(
-    #     title=request.title,
-    #     description=request.description,
-    #     price=request.price,
-    # )
-    # try:
-    #     db.add(new_record)
-    #     await db.commit()
-    #     await db.refresh(new_record)
-    # except IntegrityError as ite:
-    #     await db.rollback()
-    #     cause = ite.orig.__cause__
-    #     if isinstance(cause, UniqueViolationError) and cause.detail.startswith(
-    #         "Key (title)"
-    #     ):
-    #         e = BusinessValidationError()
-    #         e.add_error("unique_email", "Title is already in use.", None)
-    #         raise e from ite
-    #     raise AppServiceError(
-    #         "Failed to create an transaction.",
-    #         {"msg": str(ite)},
-    #     ) from ite
-    # except SQLAlchemyError as sqlae:
-    #     await db.rollback()
-    #     raise AppServiceError(
-    #         "Failed to create an transaction.",
-    #         {"msg": str(sqlae)},
-    #     ) from sqlae
-    # return new_record
-    pass
+    if request.amount == 0:
+        bv = BusinessValidationError()
+        bv.add_error(
+            "amount_zero",
+            "Amount cannot be 0",
+            None,
+        )
+        raise bv
+
+    new_record = DbTransaction(
+        user_id=user_id,
+        last_trans_id=request.last_trans_id,
+        amount=request.amount,
+    )
+
+    try:
+        db.add(new_record)
+        await db.commit()
+        await db.refresh(new_record)
+    except IntegrityError as ite:
+        await db.rollback()
+        cause = ite.orig.__cause__
+        if isinstance(cause, UniqueViolationError) and cause.detail.startswith(
+            "Key (last_trans_id)"
+        ):
+            e = BusinessValidationError()
+            e.add_error(
+                "unique_email",
+                (
+                    ("Transaction id is already declared as last"),
+                    ("transaction id for another transaction."),
+                ),
+                None,
+            )
+            raise e from ite
+        raise AppServiceError(
+            "Failed to create an transaction.",
+            {"msg": str(ite)},
+        ) from ite
+    except SQLAlchemyError as sqlae:
+        await db.rollback()
+        raise AppServiceError(
+            "Failed to create a transaction.",
+            {"msg": str(sqlae)},
+        ) from sqlae
+
+    return new_record
 
 
 async def get_transactions(

@@ -23,4 +23,4 @@ async def create_transaction(
     db: AsyncSession = Depends(get_db),
     current_user=Depends(oauth2.get_user_from_access_token),
 ):
-    return await ops_transaction.create_transaction(db, request)
+    return await ops_transaction.create_transaction(db, current_user["id"], request)

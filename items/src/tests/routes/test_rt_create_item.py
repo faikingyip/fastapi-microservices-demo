@@ -126,7 +126,6 @@ async def test_create_fail_for_unauthenticated_user(
     assert res.status_code == status.HTTP_401_UNAUTHORIZED
 
 
-#
 @pytest.mark.anyio
 async def test_create_fail_for_expired_access_token_user(
     async_client: AsyncClient,
@@ -288,6 +287,7 @@ async def test_create_fail_on_empty_description(
         json=payload,
         headers=auth_headers,
     )
+
     assert res.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
 
 
