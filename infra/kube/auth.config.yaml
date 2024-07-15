@@ -7,3 +7,7 @@ data:
   DB_PORT: "5432"
   DB_NAME: auth_srv
   DB_USER: auth_srv_user
+  RABBITMQ_HOST: rabbitmq-srv.default
+  RABBITMQ_PORT: "5672"
+  RABBITMQ_USER: rabbitmq_user
+  RABBITMQ_EXHCANGE_NAME: central

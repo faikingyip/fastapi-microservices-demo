@@ -9,20 +9,22 @@ import os
 from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-
 from src.common.database import db_manager
+from src.common.rabbit_mq import rmq_client
 from src.middlewares import mw_error_handler, mw_req_duration
 from src.routes import rt_refresh, rt_signin, rt_signup, rt_user
 
 
-def config_db():
+def load_env():
     """Function to load environment variables from the
     initiation channels. You need to set the
     ENV variable (if appropriate), then call this function to
     load the correct settings."""
 
-    # ENV is set in conftest.py
+    # ENV can be set in places
+    # such as conftest.py for pytest.
     env = os.environ.get("ENV")
+    print(f"{env=}")
     if env == "Testing":
         load_dotenv(".env.test")
     elif env == "Production":
@@ -38,18 +40,29 @@ def config_db():
     # from .env files or they will already exist
     # when building the environment.
 
+
+def config_db():
+
     db_host = os.environ.get("DB_HOST")
     db_port = os.environ.get("DB_PORT")
     db_name = os.environ.get("DB_NAME")
     db_user = os.environ.get("DB_USER")
     db_pass = os.environ.get("DB_PASS")
-    DATABASE_URL = (
-        f"postgresql+asyncpg://{db_user}:{db_pass}@{db_host}:{db_port}/{db_name}"
-    )
+    db_url = f"postgresql+asyncpg://{db_user}:{db_pass}@{db_host}:{db_port}/{db_name}"
 
-    print(f"{env=}")
-    print(f"{DATABASE_URL=}")
-    db_manager.setup(DATABASE_URL)
+    print(f"{db_url=}")
+    db_manager.setup(db_url)
+
+
+def config_rmq():
+    rmq_host = os.environ.get("RABBITMQ_HOST")
+    rmq_port = os.environ.get("RABBITMQ_PORT")
+    rmq_user = os.environ.get("RABBITMQ_USER")
+    rmq_pass = os.environ.get("RABBITMQ_PASS")
+    exch_name = os.environ.get("RABBITMQ_EXHCANGE_NAME")
+    rmq_url = f"amqp://{rmq_user}:{rmq_pass}@{rmq_host}:{rmq_port}"
+    print(f"{rmq_url=}")
+    rmq_client.setup(rmq_url, exch_name)
 
 
 app = FastAPI(title="FastAPI Microservices Demo - Auth service")

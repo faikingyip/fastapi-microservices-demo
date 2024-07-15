@@ -1,9 +1,10 @@
 from fastapi import APIRouter, Depends, Response, status
 from sqlalchemy.ext.asyncio import AsyncSession
-
 from src import oauth2
 from src.common.database import get_db
+from src.common.rabbit_mq import get_rmq
 from src.errors import NotFoundError
+from src.event.publishers.user_created_publisher import UserCreatedPublisher
 from src.ops import ops_user
 from src.schemas.schema_user import SchemaUserDisplay
 
@@ -30,13 +31,16 @@ async def get_me(
     return item
 
 
-# @router.get("/test")
-# def test(
-#     response: Response,
-# ):
-#     return {
-#         "access_token": "HELLO",
-#     }
+@router.get("/test")
+def test(
+    rmq_cli=Depends(get_rmq),
+):
+    msg = "First message published"
+    UserCreatedPublisher(rmq_cli).publish(msg)
+    print(msg)
+    return {
+        "access_token": msg,
+    }
 
 
 # @router.put(

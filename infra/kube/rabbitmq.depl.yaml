@@ -33,22 +33,12 @@ spec:
     spec:
       containers:
         - name: rabbitmq
-          # image: rabbitmq:latest
           image: rabbitmq:3.13.4-management-alpine
           env:
             - name: RABBITMQ_DEFAULT_USER
               value: rabbitmq_user
-            # - name: RABBITMQ_DEFAULT_PASS
-            #   value: rabbitmq_pass
             - name: RABBITMQ_DEFAULT_PASS
               valueFrom:
                 secretKeyRef:
                   name: rabbitmq-secret
                   key: RABBITMQ_DEFAULT_PASS
-      #     volumeMounts:
-      #       - name: pgdata
-      #         mountPath: /var/lib/postgresql/data
-      # volumes:
-      #   - name: pgdata
-      #     hostPath:
-      #       path: /home/fai/hostdata/data

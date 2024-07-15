@@ -5,7 +5,7 @@ import pytest
 from fastapi.testclient import TestClient
 from httpx import AsyncClient
 
-from src.app import app, config_db
+from src.app import app, config_db, load_env
 
 # conftest is run before main.py when you run pytest.
 
@@ -13,6 +13,7 @@ from src.app import app, config_db
 # This env variable is auto
 # removed once testing is completed.
 os.environ["ENV"] = "Testing"
+load_env()
 config_db()
 
 
