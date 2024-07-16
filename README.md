@@ -13,6 +13,7 @@ minikube service auth-srv
 - Minikube
 - ingress nginx
 - alembic
+- RabbitMQ
 
 
 ##### Error handling throughout all services.

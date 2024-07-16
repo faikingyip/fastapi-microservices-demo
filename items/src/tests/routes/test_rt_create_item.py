@@ -17,7 +17,6 @@ from uuid import uuid4
 import pytest
 from fastapi import status
 from httpx import AsyncClient
-
 from src.common import oauth2
 from src.common.crud import create_multiple
 from src.db.models.db_item import DbItem
@@ -41,8 +40,7 @@ async def create_items(db_session):
 
 @pytest.fixture
 async def access_token():
-    """Provides a method to create multiple ite"""
-
+    """Provides a method to create a fake access token"""
     email = "user@example.com"
     return oauth2.create_access_token(
         data={
@@ -57,8 +55,7 @@ async def access_token():
 
 @pytest.fixture
 async def auth_headers(access_token):
-    """Provides a method to create multiple ite"""
-
+    """Provides a method to create an auth header"""
     return {"Authorization": f"Bearer {access_token}"}
 
 

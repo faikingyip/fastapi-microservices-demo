@@ -10,22 +10,24 @@ router = APIRouter(prefix="/api/accounts", tags=["accounts"])
 
 
 @router.get(
-    "/",
+    "/me",
     status_code=status.HTTP_200_OK,
     summary="Get account for the authenticated user.",
     response_description="Get account for the authenticated user.",
     response_model=SchemaAccountDisplay,
 )
 async def get_account(
-    response: Response,
+    # response: Response,
     db: AsyncSession = Depends(get_db),
     current_user=Depends(oauth2.get_user_from_access_token),
 ):
     """Gets the account with the specified id."""
+
     account = await ops_account.get_account_by_user(
         db,
         current_user["id"],
     )
+
     if not account:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,

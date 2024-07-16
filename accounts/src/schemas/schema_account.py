@@ -44,7 +44,7 @@ class SchemaAccountDisplay(BaseModel):
     id: UUID
     user_id: UUID
     balance: Decimal
-    last_trans_id: UUID
+    version: int
     created_on: datetime
     last_updated_on: datetime
 
