@@ -28,6 +28,11 @@ spec:
                 secretKeyRef:
                   name: auth-srv-secret
                   key: JWT_SECRET_KEY
+            - name: RABBITMQ_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: rabbitmq-secret
+                  key: RABBITMQ_DEFAULT_PASS
           envFrom:
             - configMapRef:
                 name: accounts-config

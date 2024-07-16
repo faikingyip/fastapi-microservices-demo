@@ -9,7 +9,6 @@ import os
 from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-
 from src.common.database import db_manager
 from src.middlewares import mw_error_handler, mw_req_duration
 from src.routes import rt_create_item, rt_get_item, rt_get_items

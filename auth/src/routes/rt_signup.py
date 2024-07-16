@@ -25,14 +25,16 @@ async def signup(
     user = await ops_user.create_user(db, request)
     # msg = "First message published"
     # UserCreatedPublisher(rmq_cli).publish(msg)
-    UserCreatedPublisher(rmq_cli).publish(
-        json.dumps(
-            {
-                "user_id": str(user.id),
-                "email": user.email,
-                "first_name": user.first_name,
-                "last_name": user.last_name,
-            }
+
+    with rmq_cli:
+        UserCreatedPublisher(rmq_cli).publish(
+            json.dumps(
+                {
+                    "user_id": str(user.id),
+                    "email": user.email,
+                    "first_name": user.first_name,
+                    "last_name": user.last_name,
+                }
+            )
         )
-    )
     return user

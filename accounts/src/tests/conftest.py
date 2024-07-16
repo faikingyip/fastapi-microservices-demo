@@ -5,8 +5,7 @@ import pytest
 from fastapi.testclient import TestClient
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
-
-from src.app import app, config_db, db_manager
+from src.app import app, config_db, db_manager, load_env
 from src.common.database import Base
 
 # conftest is run before main.py when you run pytest.
@@ -15,6 +14,7 @@ from src.common.database import Base
 # This env variable is auto
 # removed once testing is completed.
 os.environ["ENV"] = "Testing"
+load_env()
 config_db()
 
 

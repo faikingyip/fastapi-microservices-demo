@@ -19,11 +19,7 @@ EXPOSE $PORT
 RUN python -m venv /py && \
     /py/bin/pip install --upgrade pip && \
     /py/bin/pip install -r /tmp/requirements.txt && \
-    rm -rf /tmp && \
-    adduser \
-        --disabled-password \
-        --no-create-home \
-        api-user
+    rm -rf /tmp
 
 
 COPY ./src /app/src
@@ -31,11 +27,3 @@ COPY ./src /app/src
 ENV PATH="/py/bin:$PATH"
 
 CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8002"]
-
-# Every time you run something from this immage,
-# it will run as the last user you logged in as.
-# So switch the user here.
-USER api-user
-
-
-

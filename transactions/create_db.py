@@ -1,10 +1,11 @@
 import asyncio
 
-from src.app import config_db, db_manager
+from src.app import config_db, db_manager, load_env
 from src.common.database import Base
 
 
 async def create_db():
+    load_env()
     config_db()
     async with db_manager.engine.begin() as conn:
         from src.db.models import db_transaction

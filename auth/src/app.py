@@ -5,6 +5,7 @@ initiation channels can subsequently perform tasks specific to
 their area."""
 
 import os
+import time
 
 from dotenv import load_dotenv
 from fastapi import FastAPI
@@ -48,10 +49,21 @@ def config_db():
     db_name = os.environ.get("DB_NAME")
     db_user = os.environ.get("DB_USER")
     db_pass = os.environ.get("DB_PASS")
-    db_url = f"postgresql+asyncpg://{db_user}:{db_pass}@{db_host}:{db_port}/{db_name}"
+    db_manager.setup(
+        db_host,
+        db_port,
+        db_name,
+        db_user,
+        db_pass,
+    )
 
-    print(f"{db_url=}")
-    db_manager.setup(db_url)
+    db_available = False
+    while not db_available:
+        db_available = db_manager.check_conn()
+        if not db_available:
+            print("DB not yet available")
+            time.sleep(1)
+    print("DB AVAILABLE!")
 
 
 def config_rmq():
@@ -63,6 +75,14 @@ def config_rmq():
     rmq_url = f"amqp://{rmq_user}:{rmq_pass}@{rmq_host}:{rmq_port}"
     print(f"{rmq_url=}")
     rmq_client.setup(rmq_url, exch_name)
+
+    rmq_available = False
+    while not rmq_available:
+        rmq_available = rmq_client.check_conn()
+        if not rmq_available:
+            print("RMQ not yet available")
+            time.sleep(1)
+    print("RMQ AVAILABLE!")
 
 
 app = FastAPI(title="FastAPI Microservices Demo - Auth service")
