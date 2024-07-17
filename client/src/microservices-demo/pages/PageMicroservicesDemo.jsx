@@ -31,8 +31,7 @@ export default function PageMicroservicesDemo() {
   }
 
   if (accountUseQuery.isSuccess) {
-    // console.log(accountUseQuery.data.data)
-    contentAccountBindings = <div>Retrieve account success</div>;
+    contentAccountBindings = <div>{accountUseQuery.data.data.balance}</div>;
   }
 
   return (

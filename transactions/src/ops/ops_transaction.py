@@ -2,7 +2,7 @@ from typing import Any, Dict
 
 from asyncpg import UniqueViolationError
 from fastapi import Query
-from sqlalchemy import Uuid, select
+from sqlalchemy import Uuid, func, select
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -17,6 +17,20 @@ async def create_transaction(
     user_id,
     request: SchemaTransactionCreate,
 ):
+
+    query = (
+        select(func.max(DbTransaction.version).label("max_version"))
+        .where(DbTransaction.user_id == user_id)
+        .group_by(DbTransaction.user_id)
+    )
+
+    result = await db.execute(query)
+
+    max_version = result.scalar_one_or_none()
+
+    if not max_version:
+        max_version = 0
+
     if request.amount == 0:
         bv = BusinessValidationError()
         bv.add_error(
@@ -28,7 +42,7 @@ async def create_transaction(
 
     new_record = DbTransaction(
         user_id=user_id,
-        last_trans_id=request.last_trans_id,
+        version=max_version + 1,
         amount=request.amount,
     )
 
@@ -40,7 +54,7 @@ async def create_transaction(
         await db.rollback()
         cause = ite.orig.__cause__
         if isinstance(cause, UniqueViolationError) and cause.detail.startswith(
-            "Key (last_trans_id)"
+            "Key (user_id, version)"
         ):
             e = BusinessValidationError()
             e.add_error(

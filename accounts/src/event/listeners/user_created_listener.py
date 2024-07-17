@@ -18,8 +18,7 @@ def on_message_received_handler(channel, method, properties, body):
                 user_id=json.loads(body)["user_id"],
             )
 
-    account = asyncio.run(call_create_account(get_db))
-    print(account)
+    asyncio.run(call_create_account(get_db))
     channel.basic_ack(delivery_tag=method.delivery_tag)
 
 

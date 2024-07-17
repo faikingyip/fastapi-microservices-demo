@@ -1,7 +1,7 @@
 from decimal import Decimal
 from uuid import UUID
 
-from sqlalchemy import Numeric, UniqueConstraint
+from sqlalchemy import Integer, Numeric, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column
 
 from src.db.models.db_base import DbBase
@@ -18,9 +18,12 @@ class DbTransaction(DbBase):
         nullable=False,
     )
 
-    last_trans_id: Mapped[UUID] = mapped_column(nullable=False)
+    version: Mapped[int] = mapped_column(Integer, nullable=False)
 
     __table_args__ = (
-        UniqueConstraint("last_trans_id"),
-        # Add more UniqueConstraint objects if needed
+        UniqueConstraint(
+            "user_id",
+            "version",
+            name="uix_user_version",
+        ),
     )

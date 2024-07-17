@@ -15,10 +15,10 @@ class SchemaTransactionCreate(BaseModel):
         decimal_places=2,
     )
 
-    last_trans_id: UUID = Field(
-        example="0e38df0b-0b9c-45aa-bb9f-10ab4e533f33",
-        description="Id of the last transaction",
-    )
+    # last_trans_id: UUID = Field(
+    #     example="0e38df0b-0b9c-45aa-bb9f-10ab4e533f33",
+    #     description="Id of the last transaction",
+    # )
 
     model_config = {
         "json_schema_extra": {
@@ -38,9 +38,9 @@ class SchemaTransactionDisplay(BaseModel):
     id: UUID
     user_id: UUID
     amount: Decimal
-    last_trans_id: UUID
     created_on: datetime
     last_updated_on: datetime
+    version: int
 
     model_config = ConfigDict(
         from_attributes=True,

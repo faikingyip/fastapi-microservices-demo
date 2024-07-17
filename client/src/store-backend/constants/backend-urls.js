@@ -12,6 +12,6 @@ export const backendUrls = {
   CREATE_TECH_KNOWLEDGE: "/api/jobseeker/tech-knowledge/",
   DELETE_TECH_KNOWLEDGE: "/api/jobseeker/tech-knowledge/",
   CREATE_VACANCY: "/api/employer/vacancies/",
-  ACCOUNT: "/api/account/",
-  CREATE_TRANS: "/api/account/",
+  ACCOUNT: "/api/accounts/me/",
+  CREATE_TRANS: "/api/transactions/",
 };

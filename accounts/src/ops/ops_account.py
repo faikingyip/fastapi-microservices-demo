@@ -2,7 +2,6 @@ from asyncpg import UniqueViolationError
 from sqlalchemy import Uuid, select
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
-
 from src.common.crud import get_object
 from src.db.models.db_account import DbAccount
 from src.errors import AppServiceError, BusinessValidationError
