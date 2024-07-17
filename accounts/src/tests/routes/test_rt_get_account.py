@@ -1,7 +1,7 @@
 # Retrieve success
-# Retrieve fail not found
 # Retrieve fail for unauthenticated user
 # Retrieve fail account not owned by authenticated user
+# Retrieve fail not found
 # Retrieve fail for expired access token user
 
 
@@ -44,6 +44,30 @@ async def access_token():
 async def auth_headers(access_token):
     """Provides a method to create an auth header"""
     return {"Authorization": f"Bearer {access_token}"}
+
+
+@pytest.fixture
+async def expired_access_token():
+    """Provides an expired access token to test failing cases."""
+
+    email = "user@example.com"
+    return oauth2.create_access_token(
+        data={
+            "sub": email,
+            "email": email,
+            "first_name": "Fname",
+            "last_name": "Lname",
+            "user_id": str(uuid4()),
+        },
+        expire_mins=-1,
+    )
+
+
+@pytest.fixture
+async def expired_auth_headers(expired_access_token):
+    """Provides an expired auth header to test failing cases."""
+
+    return {"Authorization": f"Bearer {expired_access_token}"}
 
 
 @pytest.fixture
@@ -96,19 +120,59 @@ async def test_retrieve_success(
     assert res.json()["version"] == 1
 
 
-# @pytest.mark.anyio
-# async def test_retrieve_fail_not_found(
-#     async_client: AsyncClient,
-#     create_accounts,
-# ):
-#     """Retrieve fail not found"""
-#     accounts_data = [
-#         {"title": "Item 1", "description": "Description 1", "price": 12.99},
-#         {"title": "Item 2", "description": "Description 2", "price": 13.99},
-#         {"title": "Item 3", "description": "Description 3", "price": 14.99},
-#     ]
-#     await create_accounts(accounts_data)
-#     res = await async_client.get(LIST_URL)
-#     assert len(res.json()["items"]) == 3
-#     res = await async_client.get(detail_url(uuid4()))
-#     assert res.status_code == status.HTTP_404_NOT_FOUND
+@pytest.mark.anyio
+async def test_retrieve_fai_for_unauthenticated_user(
+    async_client: AsyncClient,
+    create_accounts,
+):
+    """Retrieve fail for unauthenticated user"""
+
+    accounts_data = [
+        {"user_id": uuid4(), "balance": 13, "version": 1},
+        {"user_id": uuid4(), "balance": 10, "version": 1},
+        {"user_id": uuid4(), "balance": 7, "version": 1},
+    ]
+    await create_accounts(accounts_data)
+
+    res = await async_client.get(
+        DETAIL_URL,
+    )
+
+    assert res.status_code == status.HTTP_401_UNAUTHORIZED
+
+
+@pytest.mark.anyio
+async def test_retrieve_fail_not_owned_by_authenticated_user(
+    async_client: AsyncClient,
+    access_token,
+    auth_headers,
+    create_accounts,
+):
+    """Retrieve fail account not owned by authenticated user"""
+
+    accounts_data = [
+        {"user_id": uuid4(), "balance": 13, "version": 1},
+    ]
+    await create_accounts(accounts_data)
+
+    res = await async_client.get(
+        DETAIL_URL,
+        headers=auth_headers,
+    )
+
+    assert res.status_code == status.HTTP_404_NOT_FOUND
+
+
+@pytest.mark.anyio
+async def test_retrieve_fail_for_expired_access_token_user(
+    async_client: AsyncClient,
+    expired_auth_headers,
+):
+    """Retrieve fail for expired access token user."""
+
+    res = await async_client.get(
+        DETAIL_URL,
+        headers=expired_auth_headers,
+    )
+
+    assert res.status_code == status.HTTP_401_UNAUTHORIZED

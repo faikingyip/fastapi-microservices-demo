@@ -61,7 +61,7 @@ async def auth_headers(access_token):
 
 @pytest.fixture
 async def expired_access_token():
-    """Provides a method to create multiple ite"""
+    """Provides an expired access token to test failing cases."""
 
     email = "user@example.com"
     return oauth2.create_access_token(
@@ -78,7 +78,7 @@ async def expired_access_token():
 
 @pytest.fixture
 async def expired_auth_headers(expired_access_token):
-    """Provides a method to create multiple ite"""
+    """Provides an expired auth header to test failing cases."""
 
     return {"Authorization": f"Bearer {expired_access_token}"}
 
