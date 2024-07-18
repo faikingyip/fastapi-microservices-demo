@@ -1,3 +1,5 @@
+import time
+
 import pika
 from pika.exchange_type import ExchangeType
 
@@ -30,6 +32,13 @@ class RabbitMQClient:
             exchange=self.exchange_name,
             exchange_type=ExchangeType.direct,
         )
+
+    def reconnect(self):
+        try:
+            self.connect()
+        except Exception as e:
+            print(f"Failed to reconnect: {e}")
+            time.sleep(5)  # Wait before trying to reconnect
 
     def publish(self, routing_key, message):
         # self.connect()
@@ -66,13 +75,18 @@ class RabbitMQClient:
             routing_key=routing_key,
         )
 
-        self.channel.basic_consume(
-            queue=queue.method.queue,
-            auto_ack=False,
-            on_message_callback=on_msg_received_handler,
-        )
+        while True:
+            try:
+                self.channel.basic_consume(
+                    queue=queue.method.queue,
+                    auto_ack=False,
+                    on_message_callback=on_msg_received_handler,
+                )
 
-        self.channel.start_consuming()
+                self.channel.start_consuming()
+            except pika.exceptions.AMQPConnectionError:
+                print("RECONNECTING!!!!!!")
+                self.reconnect()
 
     def close(self):
         if self.connection and self.connection.is_open:

@@ -81,7 +81,7 @@ def config_rmq():
         rmq_available = rmq_client.check_conn()
         if not rmq_available:
             print("RMQ not yet available")
-            time.sleep(1)
+            time.sleep(3)
     print("RMQ AVAILABLE!")
 
 
