@@ -8,7 +8,5 @@ load_env()
 config_db()
 config_rmq()
 
-
-# thread = Thread(target=UserCreatedListener(rmq_client).listen)
 thread = Thread(target=configure, args=[rmq_client])
 thread.start()
