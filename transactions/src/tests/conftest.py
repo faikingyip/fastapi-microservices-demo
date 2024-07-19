@@ -7,7 +7,7 @@ from fastapi.testclient import TestClient
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.app import app, config_db, db_manager, load_env
+from src.app import app, config_db, config_rmq, db_manager, load_env
 from src.common import oauth2
 from src.common.database import Base
 
@@ -19,6 +19,7 @@ from src.common.database import Base
 os.environ["ENV"] = "Testing"
 load_env()
 config_db()
+config_rmq()
 
 
 @pytest.fixture(scope="session")
