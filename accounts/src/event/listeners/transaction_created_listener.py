@@ -1,4 +1,5 @@
 import asyncio
+import decimal
 import json
 import os
 
@@ -31,17 +32,22 @@ def configure(rmq_client):
 
         print(f"TRANSACTION:CREATED LISTENER: received new message: {body}")
 
-        # async def call_update_account():
-        #     async with db_man.SessionLocal() as db:
-        #         try:
-        #             return await ops_account.update_account(
-        #                 db,
-        #                 user_id=json.loads(body)["user_id"],
-        #             )
-        #         finally:
-        #             await db.close()
+        async def call_update_account():
+            async with db_man.SessionLocal() as db:
+                try:
+                    # req = json.loads(body)
+                    return await ops_account.update_account(
+                        db,
+                        user_id=body["user_id"],
+                        request={
+                            "balance": body["amount"],
+                            "version": body["version"],
+                        },
+                    )
+                finally:
+                    await db.close()
 
-        # loop.run_until_complete(call_update_account())
+        loop.run_until_complete(call_update_account())
 
         channel.basic_ack(delivery_tag=method.delivery_tag)
 

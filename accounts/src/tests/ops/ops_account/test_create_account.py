@@ -1,2 +1,3 @@
+# Create success.
 # Create fail on duplicate user.
-# Create success
+# Create fail on duplicate user id.

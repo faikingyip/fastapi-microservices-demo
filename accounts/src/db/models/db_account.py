@@ -18,9 +18,13 @@ class DbAccount(DbBase):
         nullable=False,
     )
 
-    version: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    version: Mapped[int] = mapped_column(Integer, nullable=False)
 
     __table_args__ = (
         UniqueConstraint("user_id"),
+        UniqueConstraint(
+            "user_id",
+            "version",
+        ),
         # Add more UniqueConstraint objects if needed
     )

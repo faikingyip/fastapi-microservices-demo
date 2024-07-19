@@ -1,7 +1,11 @@
+import decimal
+
 from asyncpg import UniqueViolationError
+from fastapi import HTTPException
 from sqlalchemy import Uuid, select
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
+
 from src.common.crud import get_object
 from src.db.models.db_account import DbAccount
 from src.errors import AppServiceError, BusinessValidationError
@@ -42,6 +46,50 @@ async def create_account(
             {"msg": str(sqlae)},
         ) from sqlae
     return new_record
+
+
+async def update_account(
+    db: AsyncSession,
+    user_id,
+    request,
+):
+
+    try:
+        result = await db.execute(
+            select(DbAccount).filter(DbAccount.user_id == user_id)
+        )
+
+        tran = result.scalars().first()
+
+        if tran is None:
+            raise HTTPException(
+                status_code=404,
+                detail="Item not found",
+            )
+
+        if (tran.version + 1) != request["version"]:
+            e = BusinessValidationError()
+            e.add_error(
+                "inconsistent_version",
+                (
+                    "The new version number must be greater than ",
+                    "the current version number by exactly 1.",
+                ),
+                None,
+            )
+            raise e
+
+        tran.version = request["version"]
+        tran.balance += request["balance"]
+        await db.commit()
+        await db.refresh(tran)
+        return tran
+    except SQLAlchemyError as sqlae:
+        await db.rollback()
+        raise AppServiceError(
+            "Failed to update an account.",
+            {"msg": str(sqlae)},
+        ) from sqlae
 
 
 async def get_account_by_user(db: AsyncSession, user_id: Uuid):
