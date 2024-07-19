@@ -4,6 +4,7 @@ from uuid import UUID
 from sqlalchemy import Integer, Numeric, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column
 
+from src.constants.transaction_statuses import TransactionStatuses
 from src.db.models.db_base import DbBase
 
 
@@ -19,6 +20,12 @@ class DbTransaction(DbBase):
     )
 
     version: Mapped[int] = mapped_column(Integer, nullable=False)
+
+    status: Mapped[int] = mapped_column(
+        Integer,
+        nullable=False,
+        default=TransactionStatuses.PENDING.value,
+    )
 
     __table_args__ = (
         UniqueConstraint(

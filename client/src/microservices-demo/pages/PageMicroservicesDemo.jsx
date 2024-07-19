@@ -52,7 +52,7 @@ export default function PageMicroservicesDemo() {
           Deposit funds
         </h2>
         <div>
-          <FormCreateTrans buttonText="Deposit" buttonTextSubmitting="Depositing" />
+          <FormCreateTrans buttonText="Deposit" buttonTextSubmitting="Depositing" mode="DEPOSIT" />
         </div>
       </section>
 
@@ -61,7 +61,7 @@ export default function PageMicroservicesDemo() {
           Withdraw funds
         </h2>
         <div>
-          <FormCreateTrans buttonText="Withdraw" buttonTextSubmitting="Withdrawing" />
+          <FormCreateTrans buttonText="Withdraw" buttonTextSubmitting="Withdrawing" mode="WITHDRAW" />
         </div>
       </section>
 

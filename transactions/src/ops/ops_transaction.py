@@ -7,6 +7,7 @@ from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.common.crud import get_object, get_objects
+from src.constants.transaction_statuses import TransactionStatuses
 from src.db.models.db_transaction import DbTransaction
 from src.errors import AppServiceError, BusinessValidationError
 from src.schemas.schema_transaction import SchemaTransactionCreate
@@ -44,6 +45,7 @@ async def create_transaction(
         user_id=user_id,
         version=max_version + 1,
         amount=request.amount,
+        status=TransactionStatuses.PENDING.value,
     )
 
     try:
@@ -97,10 +99,10 @@ async def get_transactions(
     )
 
 
-async def get_transaction(db: AsyncSession, id: Uuid):
+async def get_transaction(db: AsyncSession, user_id: Uuid, transaction_id: Uuid):
     return await get_object(
         db,
         select(DbTransaction).where(
-            DbTransaction.id == id,
+            (DbTransaction.user_id == user_id) & (DbTransaction.id == transaction_id)
         ),
     )

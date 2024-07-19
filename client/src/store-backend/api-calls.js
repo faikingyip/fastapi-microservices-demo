@@ -21,6 +21,10 @@ const getEmployerVacancies = async () => {
 const getVacancy = async ({ id }) => {
   return await api.get(`${backendUrls.VACANCY}${id}/`);
 };
+
+const getTransaction = async ({ id }) => {
+  return await api.get(`${backendUrls.TRANSACTION}${id}/`);
+};
 const postCreateUserMe = async ({ payload }) => {
   return await api.post(backendUrls.REGISTER, payload);
 };
@@ -79,6 +83,7 @@ const apiCalls = {
   getTechKnowledge,
   getEmployerVacancies,
   getVacancy,
+  getTransaction,
   getEmployerRep,
   postCreateUserMe,
   postCreateTechKnowledge,

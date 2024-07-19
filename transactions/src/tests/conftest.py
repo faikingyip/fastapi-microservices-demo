@@ -1,11 +1,14 @@
 import os
 from typing import AsyncGenerator, Generator
+from uuid import uuid4
 
 import pytest
 from fastapi.testclient import TestClient
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
+
 from src.app import app, config_db, db_manager, load_env
+from src.common import oauth2
 from src.common.database import Base
 
 # conftest is run before main.py when you run pytest.
@@ -75,3 +78,53 @@ async def clear_data(db_session):
     for table in reversed(Base.metadata.sorted_tables):
         await db_session.execute(table.delete())
     await db_session.commit()
+
+
+DEFAULT_USER_ID = "c5c7a225-222c-44e9-b228-3bf5b76a3fb2"
+
+
+@pytest.fixture
+async def access_token():
+    """Provides a method to create a dummy access token"""
+
+    email = "user1@example.com"
+    return oauth2.create_access_token(
+        data={
+            "sub": email,
+            "email": email,
+            "first_name": "Fname",
+            "last_name": "Lname",
+            "user_id": DEFAULT_USER_ID,
+        }
+    )
+
+
+@pytest.fixture
+async def auth_headers(access_token):
+    """Provides a method to create the authentication header"""
+
+    return {"Authorization": f"Bearer {access_token}"}
+
+
+@pytest.fixture
+async def expired_access_token():
+    """Provides a method to create multiple ite"""
+
+    email = "user@example.com"
+    return oauth2.create_access_token(
+        data={
+            "sub": email,
+            "email": email,
+            "first_name": "Fname",
+            "last_name": "Lname",
+            "user_id": str(uuid4()),
+        },
+        expire_mins=-1,
+    )
+
+
+@pytest.fixture
+async def expired_auth_headers(expired_access_token):
+    """Provides a method to create multiple ite"""
+
+    return {"Authorization": f"Bearer {expired_access_token}"}

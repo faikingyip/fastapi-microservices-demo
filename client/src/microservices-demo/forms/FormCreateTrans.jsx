@@ -7,73 +7,131 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import InputGroup from "../../components/inputs/InputGroup";
+import Modal from "../../components/Modal";
+import { useState } from "react";
+import { queryTransaction } from "../../tanstackqfns/query-transaction";
 
-const REDIRECT_URL_QUERY_PARAM = "redirectUrl";
-const DEFAULT_REDIRECT_URL = "/microservices-demo/";
+const tranProcessingStatuses = {
+  PROCESSING: "Processing, please wait",
+  COMPLETED: "Completed",
+  DECLINED: "Declined",
+};
 
 const schema = z.object({
   amount: z.string().min(1, "Amount is required"),
 });
 
-export default function FormCreateTrans({buttonText, buttonTextSubmitting}) {
+export default function FormCreateTrans({
+  buttonText,
+  buttonTextSubmitting,
+  mode,
+}) {
+  const [showModal, setShowModal] = useState(false);
+  const [processingStatus, setProcessingStatus] = useState(
+    tranProcessingStatuses.PROCESSING
+  );
+
   const form = useForm({
     mode: "onBlur",
     resolver: zodResolver(schema),
   });
 
-  const { search } = useLocation();
-  const queryParams = new URLSearchParams(search);
-
-  const navigate = useNavigate();
   const mutationDeposit = useMutation({
     mutationFn: mutateCreateTrans,
-    onSuccess: () => {
-      let redirectUrl = queryParams.get(REDIRECT_URL_QUERY_PARAM);
-      if (!redirectUrl) {
-        redirectUrl = `${DEFAULT_REDIRECT_URL}`;
-      }
-      navigate(redirectUrl);
+    onSuccess: (data) => {
+      pollTransactionStatus(data.data);
     },
     onError: (err) => {
       const serverValErrs = buildServerValErrs(err);
-      // if (serverValErrs.invalidCredentials) {
-      //   form.setError(ROOT_ERROR_NAME, {
-      //     message: INVALID_CREDENTIALS_MSG,
-      //   });
-      // }
     },
   });
+
+  function pollTransactionStatus(data) {
+    const checkTranStatus = async () => {
+      try {
+        const res = await queryTransaction({ id: data.id });
+        let tran = res.data;
+        if (tran.status === 2) {
+          setProcessingStatus(tranProcessingStatuses.COMPLETED);
+        } else if (tran.status === 3) {
+          setProcessingStatus(tranProcessingStatuses.DECLINED);
+        } else {
+          setTimeout(checkTranStatus, 5000);
+          setProcessingStatus(tranProcessingStatuses.PROCESSING);
+        }
+      } catch (err) {
+      } finally {
+      }
+    };
+
+    checkTranStatus();
+  }
 
   const serverValErrs = buildServerValErrs(mutationDeposit.error);
 
   function handleOnSubmit(data) {
+    setProcessingStatus(tranProcessingStatuses.PROCESSING);
+    setShowModal(true);
+
+    let submissionData = {
+      ...data
+    }
+    if(mode == "DEPOSIT") {
+    }
+    else if(mode == "WITHDRAW") {
+      submissionData.amount *= -1
+    }
+
     mutationDeposit.mutate({
-      payload: data,
+      payload: submissionData,
     });
   }
 
-  return (
-    <form method="post" onSubmit={form.handleSubmit(handleOnSubmit)}>
-      <InputGroup
-        id="amount"
-        label="Amount"
-        type="number"
-        {...form.register("amount")}
-        errorMessage={
-          form.formState.errors.amount && form.formState.errors.amount.message
-        }
-      />
+  function handleCloseClick() {
+    setShowModal(false);
+    form.reset()
+  }
 
-      <div className={`${classes["buttons"]}`}>
-        <button
-          type="submit"
-          disabled={mutationDeposit.isPending}
-          className={`button button-color-proceed button-width-stretched`}
-        >
-          {mutationDeposit.isPending ? buttonTextSubmitting : buttonText}
-        </button>
-      </div>
-    </form>
+  function handleOKClick() {
+    setShowModal(false);
+    form.reset()
+  }
+
+  return (
+    <>
+      <form method="post" onSubmit={form.handleSubmit(handleOnSubmit)}>
+        <InputGroup
+          id="amount"
+          label="Amount"
+          type="number"
+          {...form.register("amount")}
+          errorMessage={
+            form.formState.errors.amount && form.formState.errors.amount.message
+          }
+        />
+
+        <div className={`${classes["buttons"]}`}>
+          <button
+            type="submit"
+            disabled={mutationDeposit.isPending}
+            className={`button button-color-proceed button-width-stretched`}
+          >
+            {mutationDeposit.isPending ? buttonTextSubmitting : buttonText}
+          </button>
+        </div>
+      </form>
+
+      {showModal && (
+        <Modal onClose={handleCloseClick} show={showModal}>
+          <div className={`form-container`}>
+            <h2 className={`form-title`}>{processingStatus}</h2>
+            {processingStatus !== tranProcessingStatuses.PROCESSING && (
+              <button onClick={handleOKClick}>OK</button>
+            )}
+          </div>
+        </Modal>
+      )}
+    </>
   );
 }
 

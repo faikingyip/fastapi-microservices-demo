@@ -45,6 +45,7 @@ async def get_transactions(
     sort_type: TransactionDisplaySortTypes = TransactionDisplaySortTypes.Created_on,
     db: AsyncSession = Depends(get_db),
 ):
+
     sort_by = (
         transaction_sort_type_map[sort_type]
         if sort_type

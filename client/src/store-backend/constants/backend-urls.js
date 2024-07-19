@@ -14,4 +14,5 @@ export const backendUrls = {
   CREATE_VACANCY: "/api/employer/vacancies/",
   ACCOUNT: "/api/accounts/me/",
   CREATE_TRANS: "/api/transactions/",
+  TRANSACTION: "/api/transactions/",
 };

@@ -41,6 +41,7 @@ class SchemaTransactionDisplay(BaseModel):
     created_on: datetime
     last_updated_on: datetime
     version: int
+    status: int
 
     model_config = ConfigDict(
         from_attributes=True,
