@@ -17,8 +17,27 @@ const tranProcessingStatuses = {
   DECLINED: "Declined",
 };
 
-const schema = z.object({
-  amount: z.string().min(1, "Amount is required"),
+
+// const schema = (reservedUsernames) => z.object({
+//   username: z.string()
+//     .min(5, 'Username must be at least 5 characters long')
+//     .nonempty('Username is required')
+//     .refine(value => !reservedUsernames.includes(value), { message: 'This username is reserved' }),
+//   age: z.number()
+//     .min(18, 'Age must be at least 18')
+//     .max(99, 'Age must be less than 100')
+//     .int('Age must be an integer'),
+// });
+
+
+const schema = () => z.object({
+  amount: z.string().min(1, "Amount is required").refine(value => {
+    const parsed = parseFloat(value);
+    return !isNaN(parsed) && parsed > 0;
+  }, {
+    message: 'Amount must be a number greater than 0',
+  }),
+
 });
 
 export default function FormCreateTrans({
@@ -33,7 +52,7 @@ export default function FormCreateTrans({
 
   const form = useForm({
     mode: "onBlur",
-    resolver: zodResolver(schema),
+    resolver: zodResolver(schema()),
   });
 
   const mutationDeposit = useMutation({
@@ -76,9 +95,9 @@ export default function FormCreateTrans({
     let submissionData = {
       ...data
     }
-    if(mode == "DEPOSIT") {
+    if(mode === "DEPOSIT") {
     }
-    else if(mode == "WITHDRAW") {
+    else if(mode === "WITHDRAW") {
       submissionData.amount *= -1
     }
 

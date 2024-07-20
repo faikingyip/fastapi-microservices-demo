@@ -1,11 +1,13 @@
 import asyncio
 from logging.config import fileConfig
 
-from alembic import context
 from sqlalchemy import pool
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
-from src.app import config_db, db_manager, load_env
+
+from alembic import context
+from src.app import load_env
+from src.common.api_context_builder import ApiContextBuilder
 from src.common.database import Base
 from src.db.models import db_account
 
@@ -14,8 +16,8 @@ from src.db.models import db_account
 config = context.config
 
 load_env()
-config_db()
-config.set_main_option("sqlalchemy.url", db_manager.db_url)
+api_ctx = ApiContextBuilder().config_db_man().ensure_db_conn().build()
+config.set_main_option("sqlalchemy.url", api_ctx.db_man.db_url)
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.

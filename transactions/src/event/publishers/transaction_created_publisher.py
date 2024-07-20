@@ -8,5 +8,4 @@ class TransactionCreatedPublisher:
         self.subject = EventSubjects.TRANSACTION_CREATED
 
     def publish(self, msg):
-        print("PUBLISHING")
         self.client.publish(self.subject, msg)

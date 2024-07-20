@@ -1,5 +1,3 @@
-import decimal
-
 from asyncpg import UniqueViolationError
 from fastapi import HTTPException
 from sqlalchemy import Uuid, select
@@ -55,19 +53,31 @@ async def update_account(
 ):
 
     try:
+        amount = request["amount"]
+        version = request["version"]
+
+        if amount == 0:
+            e = BusinessValidationError()
+            e.add_error(
+                "invalid_amount",
+                "The amount cannot be 0.",
+                None,
+            )
+            raise e
+
         result = await db.execute(
             select(DbAccount).filter(DbAccount.user_id == user_id)
         )
 
-        tran = result.scalars().first()
+        account = result.scalars().first()
 
-        if tran is None:
+        if account is None:
             raise HTTPException(
                 status_code=404,
                 detail="Item not found",
             )
 
-        if (tran.version + 1) != request["version"]:
+        if (account.version + 1) != version:
             e = BusinessValidationError()
             e.add_error(
                 "inconsistent_version",
@@ -79,11 +89,20 @@ async def update_account(
             )
             raise e
 
-        tran.version = request["version"]
-        tran.balance += request["balance"]
+        if account.balance + amount < 0:
+            e = BusinessValidationError()
+            e.add_error(
+                "negative_balance",
+                "The transaction would result in a negative balance.",
+                None,
+            )
+            raise e
+
+        account.version = version
+        account.balance += amount
         await db.commit()
-        await db.refresh(tran)
-        return tran
+        await db.refresh(account)
+        return account
     except SQLAlchemyError as sqlae:
         await db.rollback()
         raise AppServiceError(

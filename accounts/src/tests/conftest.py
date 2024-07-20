@@ -5,7 +5,10 @@ import pytest
 from fastapi.testclient import TestClient
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
-from src.app import app, config_db, db_manager, load_env
+
+from src.app import app, load_env
+from src.common.api_context import ApiContext
+from src.common.api_context_builder import ApiContextBuilder
 from src.common.database import Base
 
 # conftest is run before main.py when you run pytest.
@@ -15,7 +18,7 @@ from src.common.database import Base
 # removed once testing is completed.
 os.environ["ENV"] = "Testing"
 load_env()
-config_db()
+ApiContextBuilder().config_db_man().ensure_db_conn().build()
 
 
 @pytest.fixture(scope="session")
@@ -42,13 +45,13 @@ async def async_client(client) -> AsyncGenerator:
 
 async def create_db_tables():
     """Creates all tables in the database"""
-    async with db_manager.engine.begin() as conn:
+    async with ApiContext.get_instance().db_man.engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
 
 
 async def drop_db_tables():
     """Drops all tables in the database."""
-    async with db_manager.engine.begin() as conn:
+    async with ApiContext.get_instance().db_man.engine.begin() as conn:
         await conn.run_sync(Base.metadata.drop_all)
 
 
@@ -62,7 +65,7 @@ async def setup_and_teardown_db():
 
 @pytest.fixture(scope="function")
 async def db_session() -> AsyncSession:
-    session = db_manager.SessionLocal()
+    session = ApiContext.get_instance().db_man.session_local()
     try:
         yield session
     finally:

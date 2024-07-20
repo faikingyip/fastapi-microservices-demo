@@ -12,8 +12,10 @@ from fastapi import status
 from httpx import AsyncClient
 
 from src.common import oauth2
+from src.common.api_context import ApiContext
 from src.common.crud import create_multiple
-from src.common.database import get_db
+
+# from src.common.database import get_db
 from src.db.models.db_account import DbAccount
 from src.ops import ops_account
 
@@ -102,7 +104,7 @@ async def test_retrieve_success(
     ]
     await create_accounts(accounts_data)
 
-    async for db in get_db():
+    async for db in ApiContext.get_instance().db_man.get_session():
         account = await ops_account.get_account_by_user(
             db,
             user_id=current_user["id"],

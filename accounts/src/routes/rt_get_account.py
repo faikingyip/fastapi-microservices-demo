@@ -2,7 +2,9 @@ from fastapi import APIRouter, Depends, HTTPException, Response, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.common import oauth2
-from src.common.database import get_db
+
+# from src.common.database import get_db
+from src.common.api_context import ApiContext
 from src.ops import ops_account
 from src.schemas.schema_account import SchemaAccountDisplay
 
@@ -18,7 +20,7 @@ router = APIRouter(prefix="/api/accounts", tags=["accounts"])
 )
 async def get_account(
     # response: Response,
-    db: AsyncSession = Depends(get_db),
+    db: AsyncSession = Depends(ApiContext.get_instance().db_man.get_session),
     current_user=Depends(oauth2.get_user_from_access_token),
 ):
     """Gets the account with the specified id."""
