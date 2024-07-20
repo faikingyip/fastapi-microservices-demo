@@ -1,8 +1,8 @@
 import asyncio
 
 from src.app import load_env
-from src.common.api_context_builder import ApiContextBuilder
-from src.common.database import Base
+from src.common.ctx.api_context_builder import ApiContextBuilder
+from src.common.db.base import Base
 from src.db.models import db_account
 
 

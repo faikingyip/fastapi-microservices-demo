@@ -4,7 +4,7 @@ from uuid import UUID
 from sqlalchemy import Integer, Numeric, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column
 
-from src.db.models.db_base import DbBase
+from src.common.db.db_base import DbBase
 
 
 class DbAccount(DbBase):

@@ -1,10 +1,18 @@
 import time
 
-from src.common.db_manager import DbManager
-from src.common.rmq_listener_client import RMQListenerClient
+from src.common.ctx.db_manager import DbManager
+from src.common.ctx.rmq_listener_client import RMQListenerClient
 
 
 class RMQListenerContext:
+    """The context used for running RMQ listeners,
+    which should be run in a different thread from the
+    FastAPI context. The context holds various components
+    required in order to run the RMQ listeners required for
+    this service. This context should be a singleton -
+    only one instance should be run throughout the lifetime
+    of the application."""
+
     instance = None
 
     def __init__(self):

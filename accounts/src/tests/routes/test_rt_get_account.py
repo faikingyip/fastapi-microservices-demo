@@ -12,8 +12,8 @@ from fastapi import status
 from httpx import AsyncClient
 
 from src.common import oauth2
-from src.common.api_context import ApiContext
-from src.common.crud import create_multiple
+from src.common.ctx.api_context import ApiContext
+from src.common.db.crud import create_multiple
 
 # from src.common.database import get_db
 from src.db.models.db_account import DbAccount

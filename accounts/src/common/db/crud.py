@@ -1,11 +1,11 @@
 from typing import Any, Dict
 
 from fastapi import Query
-from sqlalchemy import Uuid, func, select
+from sqlalchemy import func, select
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.common.query_utils import apply_sorting_and_paging_to_list_query
+from src.common.db.query_paging_utils import apply_sorting_and_paging_to_list_query
 from src.errors import AppServiceError
 
 

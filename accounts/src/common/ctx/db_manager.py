@@ -3,6 +3,8 @@ from sqlalchemy.ext import asyncio
 
 
 class DbManager:
+    """Manages connections to the database."""
+
     def __init__(self):
         self.db_url = None
         self.engine = None
@@ -36,6 +38,8 @@ class DbManager:
         )
 
     def check_conn(self):
+        """Checks the connection to the database.
+        Check is performed in sync mode."""
         try:
             conn = psycopg2.connect(
                 host=self.db_host,

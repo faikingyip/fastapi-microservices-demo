@@ -1,4 +1,3 @@
-import time
 from abc import ABC
 
 import pika
@@ -6,6 +5,9 @@ from pika.exchange_type import ExchangeType
 
 
 class RMQClient(ABC):
+    """Abstract class to hold all the common methods
+    related to connection to the RabbitMQ server."""
+
     def __init__(self):
         self.connection = None
         self.channel = None
@@ -41,6 +43,7 @@ class RMQClient(ABC):
         )
 
     def check_conn(self):
+        """Checks the connection to the RabbitMQ server."""
 
         if self.connection and self.connection.is_open:
             return True

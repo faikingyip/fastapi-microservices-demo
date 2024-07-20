@@ -1,12 +1,13 @@
 import time
 
 import pika
-from pika.exchange_type import ExchangeType
 
-from src.common.rmq_client import RMQClient
+from src.common.ctx.rmq_client import RMQClient
 
 
 class Listener:
+    """Data class"""
+
     def __init__(
         self,
         routing_key,
@@ -17,12 +18,17 @@ class Listener:
 
 
 class RMQListenerClient(RMQClient):
+    """A client specifically for listening or
+    consuming messages from RabbitMQ."""
+
     def __init__(self):
         super().__init__()
         self.listener_routing_key_map = {}
-        # self.listeners: list[Listener] = []
 
     def on_msg_received_handler(self, channel, method, properties, body):
+        """The generic handler for messages received. The routing
+        key is then assessed to determine which specific registered
+        listener should be used to handle the event."""
         handler = self.listener_routing_key_map[method.routing_key]
         handler(channel, method, properties, body)
 
@@ -34,14 +40,12 @@ class RMQListenerClient(RMQClient):
             time.sleep(5)  # Wait before trying to reconnect
 
     def set_listeners(self, listeners: list[Listener]):
-        # self.listeners = listeners
-
+        """The listeners to register, along with its routing key."""
         for listener in listeners:
             self.listener_routing_key_map[listener.routing_key] = (
                 listener.on_msg_received_handler
             )
 
-    # def listen(self, routing_key, on_msg_received_handler):
     def listen(self):
         self.connect()
 

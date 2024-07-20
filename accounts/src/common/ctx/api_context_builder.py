@@ -1,8 +1,14 @@
-from src.common.api_context import ApiContext
-from src.common.api_context_component_factory import ApiContextComponentFactory
+from src.common.ctx.api_context import ApiContext
+from src.common.ctx.api_context_component_factory import ApiContextComponentFactory
 
 
 class ApiContextBuilder:
+    """Provides the builder methods for
+    configuing the components of the ApiContext.
+    Depending on the run mode of the application,
+    i.e. test, or prod, some of the components may
+    not be needed."""
+
     def __init__(self):
         self.api_ctx: ApiContext = ApiContext.get_instance()
 

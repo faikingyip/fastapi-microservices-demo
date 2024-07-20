@@ -1,11 +1,17 @@
-from src.common.rmq_listener_client import Listener
-from src.common.rmq_listener_context import RMQListenerContext
-from src.common.rmq_listener_context_component_factory import (
+from src.common.ctx.rmq_listener_client import Listener
+from src.common.ctx.rmq_listener_context import RMQListenerContext
+from src.common.ctx.rmq_listener_context_component_factory import (
     RMQListenerContextComponentFactory,
 )
 
 
 class RMQListenerContextBuilder:
+    """Provides the builder methods for
+    configuing the components of the RMQListenerContext.
+    Depending on the run mode of the application,
+    i.e. test, or prod, some of the components may
+    not be needed."""
+
     def __init__(self):
         self.rmq_listener_ctx: RMQListenerContext = RMQListenerContext.get_instance()
 

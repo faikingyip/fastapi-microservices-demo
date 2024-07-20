@@ -1,10 +1,18 @@
 import time
 
-from src.common.db_manager import DbManager
-from src.common.rmq_publisher_client import RMQPublisherClient
+from src.common.ctx.db_manager import DbManager
+from src.common.ctx.rmq_publisher_client import RMQPublisherClient
 
 
 class ApiContext:
+    """An ApiContext holds all the the main components
+    that are needed to run a FastAPI application.
+    It also exposes some convenient methods to ensure
+    the components required are operational.
+    The ApiContext should be a singleton - only one
+    instance should be created throughout the entire
+    application lifetime."""
+
     instance = None
 
     def __init__(self):

@@ -9,9 +9,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.app import app, load_env
 from src.common import oauth2
-from src.common.api_context import ApiContext
-from src.common.api_context_builder import ApiContextBuilder
-from src.common.database import Base
+from src.common.ctx.api_context import ApiContext
+from src.common.ctx.api_context_builder import ApiContextBuilder
+from src.common.db.base import Base
 
 # conftest is run before main.py when you run pytest.
 

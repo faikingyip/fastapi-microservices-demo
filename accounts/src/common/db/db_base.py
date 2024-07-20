@@ -5,7 +5,7 @@ from sqlalchemy import DateTime
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.sql import func
 
-from src.common.database import Base
+from src.common.db.base import Base
 
 # from sqlalchemy.ext.asyncio import AsyncAttrs
 
