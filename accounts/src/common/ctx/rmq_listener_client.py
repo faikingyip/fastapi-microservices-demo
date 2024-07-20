@@ -71,12 +71,5 @@ class RMQListenerClient(RMQClient):
             except pika.exceptions.ChannelWrongStateError:
                 time.sleep(3)
 
-    def __enter__(self):
-        self.connect()
-        return self
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        self.close()
-
     async def get_rmq_listener_client(self):
         return self
