@@ -17,7 +17,6 @@ const tranProcessingStatuses = {
   DECLINED: "Declined",
 };
 
-
 // const schema = (reservedUsernames) => z.object({
 //   username: z.string()
 //     .min(5, 'Username must be at least 5 characters long')
@@ -29,16 +28,21 @@ const tranProcessingStatuses = {
 //     .int('Age must be an integer'),
 // });
 
-
-const schema = () => z.object({
-  amount: z.string().min(1, "Amount is required").refine(value => {
-    const parsed = parseFloat(value);
-    return !isNaN(parsed) && parsed > 0;
-  }, {
-    message: 'Amount must be a number greater than 0',
-  }),
-
-});
+const schema = () =>
+  z.object({
+    amount: z
+      .string()
+      .min(1, "Amount is required")
+      .refine(
+        (value) => {
+          const parsed = parseFloat(value);
+          return !isNaN(parsed) && parsed > 0;
+        },
+        {
+          message: "Amount must be a number greater than 0",
+        }
+      ),
+  });
 
 export default function FormCreateTrans({
   buttonText,
@@ -93,12 +97,11 @@ export default function FormCreateTrans({
     setShowModal(true);
 
     let submissionData = {
-      ...data
-    }
-    if(mode === "DEPOSIT") {
-    }
-    else if(mode === "WITHDRAW") {
-      submissionData.amount *= -1
+      ...data,
+    };
+    if (mode === formModes.DEPOSIT) {
+    } else if (mode === formModes.WITHDRAW) {
+      submissionData.amount *= -1;
     }
 
     mutationDeposit.mutate({
@@ -108,12 +111,12 @@ export default function FormCreateTrans({
 
   function handleCloseClick() {
     setShowModal(false);
-    form.reset()
+    form.reset();
   }
 
   function handleOKClick() {
     setShowModal(false);
-    form.reset()
+    form.reset();
   }
 
   return (
@@ -176,4 +179,9 @@ const buildServerValErrs = (err) => {
   // }
 
   return serverValErrs;
+};
+
+export const formModes = {
+  DEPOSIT: "DEPOSIT",
+  WITHDRAW: "WITHDRAW",
 };

@@ -6,7 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import classes from "./PageMicroservicesDemo.module.css";
 import Modal from "../../components/Modal";
 import { queryAccount } from "../../tanstackqfns/query-account";
-import FormCreateTrans from "../forms/FormCreateTrans";
+import FormCreateTrans, { formModes } from "../forms/FormCreateTrans";
 
 export default function PageMicroservicesDemo() {
   const [showModal, setShowShowModal] = useState(false);
@@ -38,21 +38,20 @@ export default function PageMicroservicesDemo() {
     <>
       <hr />
       <section className={`section`}>
-        <h2 className={`section-title section-title-color-wood`}>
-          Balance
-        </h2>
-        <div className={`${classes["balance"]}`}>
-          {contentAccountBindings}
-        </div>
-
+        <h2 className={`section-title section-title-color-wood`}>Balance</h2>
+        <div className={`${classes["balance"]}`}>{contentAccountBindings}</div>
       </section>
-      
+
       <section className={`section`}>
         <h2 className={`section-title section-title-color-wood`}>
           Deposit funds
         </h2>
         <div>
-          <FormCreateTrans buttonText="Deposit" buttonTextSubmitting="Depositing" mode="DEPOSIT" />
+          <FormCreateTrans
+            buttonText="Deposit"
+            buttonTextSubmitting="Depositing"
+            mode={formModes.DEPOSIT}
+          />
         </div>
       </section>
 
@@ -61,15 +60,19 @@ export default function PageMicroservicesDemo() {
           Withdraw funds
         </h2>
         <div>
-          <FormCreateTrans buttonText="Withdraw" buttonTextSubmitting="Withdrawing" mode="WITHDRAW" />
+          <FormCreateTrans
+            buttonText="Withdraw"
+            buttonTextSubmitting="Withdrawing"
+            mode={formModes.WITHDRAW}
+          />
         </div>
       </section>
 
-        {showModal && (
-          <Modal onClose={handleOnCloseModal}>
-            <div className={`form-container`}>
-              <h2 className={`form-title`}>Add a tech experience</h2>
-              {/* <FormAddSkillExp
+      {showModal && (
+        <Modal onClose={handleOnCloseModal}>
+          <div className={`form-container`}>
+            <h2 className={`form-title`}>Add a tech experience</h2>
+            {/* <FormAddSkillExp
                 skills={techs.data}
                 onCancelClick={handleBindTechnologyOnCancelClick}
                 onSuccess={handleOnTechKnowedgeCreationSuccess}
@@ -77,9 +80,9 @@ export default function PageMicroservicesDemo() {
                 yearOfExposureLabel="What year did you start working with this skill?"
                 monthsOfPracticeLabel="How many solid months of practice have you had since you were first exposed to the skill?"
               /> */}
-            </div>
-          </Modal>
-        )}
+          </div>
+        </Modal>
+      )}
     </>
   );
 }
