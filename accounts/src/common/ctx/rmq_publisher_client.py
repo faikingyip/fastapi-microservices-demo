@@ -24,10 +24,6 @@ class RMQPublisherClient(RMQClient):
             # Logging
             pass
 
-    def close(self):
-        if self.connection and self.connection.is_open:
-            self.connection.close()
-
     def __enter__(self):
         self.connect()
         return self

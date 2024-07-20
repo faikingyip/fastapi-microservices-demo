@@ -1,3 +1,4 @@
+import socket
 import time
 
 import pika
@@ -124,14 +125,15 @@ class RabbitMQClient:
 
     def check_conn(self):
 
-        if self.connection and self.connection.is_open:
-            return True
-
         try:
             connection = pika.BlockingConnection(pika.URLParameters(self.url))
             connection.close()
             return True
         except pika.exceptions.AMQPConnectionError:
+            return False
+        except pika.exceptions.ChannelWrongStateError:
+            return False
+        except socket.gaierror:
             return False
 
 

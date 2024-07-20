@@ -1,3 +1,5 @@
+import traceback
+
 import psycopg2
 from sqlalchemy.ext import asyncio
 
@@ -47,10 +49,13 @@ class DbManager:
                 dbname=self.db_name,
                 user=self.db_user,
                 password=self.db_pass,
+                connect_timeout=3,
             )
             conn.close()
             return True
         except psycopg2.OperationalError:
+            return False
+        except Exception:
             return False
 
     async def get_session(self):

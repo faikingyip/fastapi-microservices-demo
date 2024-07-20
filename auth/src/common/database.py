@@ -1,3 +1,5 @@
+import traceback
+
 import psycopg2
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from sqlalchemy.orm import DeclarativeBase
@@ -48,19 +50,14 @@ class DbManager:
                 dbname=self.db_name,
                 user=self.db_user,
                 password=self.db_pass,
+                connect_timeout=3,
             )
             conn.close()
             return True
         except psycopg2.OperationalError:
             return False
-        # try:
-        #     conn = await asyncpg.connect(self.db_url)
-        #     await conn.close()
-        #     return True
-        # except asyncpg.exceptions.InvalidPasswordError:
-        #     return False
-        # except asyncpg.exceptions.CannotConnectNowError:
-        #     return False
+        except Exception:
+            return False
 
 
 db_manager = DbManager()

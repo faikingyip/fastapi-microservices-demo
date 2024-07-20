@@ -21,9 +21,12 @@ class RMQListenerContext:
 
     def ensure_db_conn(self):
         db_available = False
-        print("ENSURING DB AVAILABLE")
+        print("ENSURING DB AVAILABLE IN RMQ LISTENER CONTEXT")
         while not db_available:
-            db_available = self.db_man.check_conn()
+            try:
+                db_available = self.db_man.check_conn()
+            except Exception:
+                time.sleep(3)
             if not db_available:
                 time.sleep(2)
         print("DB AVAILABLE!")
@@ -32,7 +35,10 @@ class RMQListenerContext:
         rmq_available = False
         print("ENSURING RMQ LISTENER CLIENT AVAILABLE")
         while not rmq_available:
-            rmq_available = self.rmq_listener_client.check_conn()
+            try:
+                rmq_available = self.rmq_listener_client.check_conn()
+            except Exception:
+                time.sleep(3)
             if not rmq_available:
                 time.sleep(3)
         print("RMQ LISTENER CLIENT AVAILABLE!")

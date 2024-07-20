@@ -1,3 +1,4 @@
+import socket
 from abc import ABC
 
 import pika
@@ -26,10 +27,6 @@ class RMQClient(ABC):
         self.exchange_name = exchange_name
 
     def connect(self):
-
-        if self.connection and self.connection.is_open:
-            return
-
         self.connection = pika.BlockingConnection(pika.URLParameters(self.url))
         self.channel = self.connection.channel()
 
@@ -44,13 +41,19 @@ class RMQClient(ABC):
 
     def check_conn(self):
         """Checks the connection to the RabbitMQ server."""
-
-        if self.connection and self.connection.is_open:
-            return True
-
         try:
             connection = pika.BlockingConnection(pika.URLParameters(self.url))
             connection.close()
             return True
         except pika.exceptions.AMQPConnectionError:
             return False
+        except pika.exceptions.ChannelWrongStateError:
+            return False
+        except socket.gaierror:
+            return False
+
+    def close(self):
+        if self.connection and self.connection.is_open:
+            self.connection.close()
+        if self.channel and self.channel.is_open:
+            self.channel.close()

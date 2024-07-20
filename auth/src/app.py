@@ -10,6 +10,7 @@ import time
 from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+
 from src.common.database import db_manager
 from src.common.rabbit_mq import rmq_client
 from src.middlewares import mw_error_handler, mw_req_duration
@@ -43,7 +44,6 @@ def load_env():
 
 
 def config_db():
-
     db_host = os.environ.get("DB_HOST")
     db_port = os.environ.get("DB_PORT")
     db_name = os.environ.get("DB_NAME")

@@ -60,7 +60,10 @@ def config_db():
 
     db_available = False
     while not db_available:
-        db_available = db_manager.check_conn()
+        try:
+            db_available = db_manager.check_conn()
+        except Exception:
+            time.sleep(1)
         if not db_available:
             print("DB not yet available")
             time.sleep(1)
@@ -79,7 +82,10 @@ def config_rmq():
 
     rmq_available = False
     while not rmq_available:
-        rmq_available = rmq_client.check_conn()
+        try:
+            rmq_available = rmq_client.check_conn()
+        except Exception:
+            time.sleep(1)
         if not rmq_available:
             print("RMQ not yet available")
             time.sleep(3)

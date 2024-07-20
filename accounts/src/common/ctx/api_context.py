@@ -21,9 +21,12 @@ class ApiContext:
 
     def ensure_db_conn(self):
         db_available = False
-        print("ENSURING DB AVAILABLE")
+        print("ENSURING DB AVAILABLE IN API CONTEXT")
         while not db_available:
-            db_available = self.db_man.check_conn()
+            try:
+                db_available = self.db_man.check_conn()
+            except Exception:
+                time.sleep(3)
             if not db_available:
                 time.sleep(2)
         print("DB AVAILABLE!")
@@ -32,7 +35,10 @@ class ApiContext:
         rmq_available = False
         print("ENSURING RMQ PUB CLIENT AVAILABLE")
         while not rmq_available:
-            rmq_available = self.rmq_pub_client.check_conn()
+            try:
+                rmq_available = self.rmq_pub_client.check_conn()
+            except Exception:
+                time.sleep(3)
             if not rmq_available:
                 time.sleep(3)
         print("RMQ PUB CLIENT AVAILABLE!")

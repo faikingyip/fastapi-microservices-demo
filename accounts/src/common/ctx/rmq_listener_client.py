@@ -32,13 +32,6 @@ class RMQListenerClient(RMQClient):
         handler = self.listener_routing_key_map[method.routing_key]
         handler(channel, method, properties, body)
 
-    def reconnect(self):
-        try:
-            self.connect()
-        except Exception as e:
-            print(f"Failed to reconnect: {e}")
-            time.sleep(5)  # Wait before trying to reconnect
-
     def set_listeners(self, listeners: list[Listener]):
         """The listeners to register, along with its routing key."""
         for listener in listeners:
@@ -47,23 +40,25 @@ class RMQListenerClient(RMQClient):
             )
 
     def listen(self):
-        self.connect()
-
-        # Each consumer will still need its own dedicated queue.
-        # But we don't specify a queue name. Instead we provide an empty string
-        # which will let the server decide on a name dynamically.
-        # exclusive=True means the queue can be deleted with the consumer is closed.
-        queue = self.channel.queue_declare(queue="", exclusive=True, durable=True)
-
-        for routing_key in self.listener_routing_key_map:
-            self.channel.queue_bind(
-                exchange=self.exchange_name,
-                queue=queue.method.queue,
-                routing_key=routing_key,
-            )
-
         while True:
             try:
+                self.connect()
+
+                # Each consumer will still need its own dedicated queue.
+                # But we don't specify a queue name. Instead we provide an empty string
+                # which will let the server decide on a name dynamically.
+                # exclusive=True means the queue can be deleted with the consumer is closed.
+                queue = self.channel.queue_declare(
+                    queue="", exclusive=True, durable=True
+                )
+
+                for routing_key in self.listener_routing_key_map:
+                    self.channel.queue_bind(
+                        exchange=self.exchange_name,
+                        queue=queue.method.queue,
+                        routing_key=routing_key,
+                    )
+
                 self.channel.basic_consume(
                     queue=queue.method.queue,
                     auto_ack=False,
@@ -72,13 +67,9 @@ class RMQListenerClient(RMQClient):
 
                 self.channel.start_consuming()
             except pika.exceptions.AMQPConnectionError:
-                time.sleep(1)
-                self.reconnect()
-
-    def close(self):
-        if self.connection and self.connection.is_open:
-            self.connection.close()
-            # self.channel.close()
+                time.sleep(3)
+            except pika.exceptions.ChannelWrongStateError:
+                time.sleep(3)
 
     def __enter__(self):
         self.connect()
