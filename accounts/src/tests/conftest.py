@@ -1,5 +1,6 @@
 import os
 from typing import AsyncGenerator, Generator
+from uuid import uuid4
 
 import pytest
 from fastapi.testclient import TestClient
@@ -7,6 +8,7 @@ from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.app import app, load_env
+from src.common import oauth2
 from src.common.api_context import ApiContext
 from src.common.api_context_builder import ApiContextBuilder
 from src.common.database import Base
@@ -78,3 +80,48 @@ async def clear_data(db_session):
     for table in reversed(Base.metadata.sorted_tables):
         await db_session.execute(table.delete())
     await db_session.commit()
+
+
+@pytest.fixture
+async def access_token():
+    """Provides a method to create a fake access token"""
+    email = "user@example.com"
+    return oauth2.create_access_token(
+        data={
+            "sub": email,
+            "email": email,
+            "first_name": "Fname",
+            "last_name": "Lname",
+            "user_id": str(uuid4()),
+        }
+    )
+
+
+@pytest.fixture
+async def auth_headers(access_token):
+    """Provides a method to create an auth header"""
+    return {"Authorization": f"Bearer {access_token}"}
+
+
+@pytest.fixture
+async def expired_access_token():
+    """Provides an expired access token to test failing cases."""
+
+    email = "user@example.com"
+    return oauth2.create_access_token(
+        data={
+            "sub": email,
+            "email": email,
+            "first_name": "Fname",
+            "last_name": "Lname",
+            "user_id": str(uuid4()),
+        },
+        expire_mins=-1,
+    )
+
+
+@pytest.fixture
+async def expired_auth_headers(expired_access_token):
+    """Provides an expired auth header to test failing cases."""
+
+    return {"Authorization": f"Bearer {expired_access_token}"}

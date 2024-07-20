@@ -28,51 +28,6 @@ DETAIL_URL = "/api/accounts/me"
 
 
 @pytest.fixture
-async def access_token():
-    """Provides a method to create a fake access token"""
-    email = "user@example.com"
-    return oauth2.create_access_token(
-        data={
-            "sub": email,
-            "email": email,
-            "first_name": "Fname",
-            "last_name": "Lname",
-            "user_id": str(uuid4()),
-        }
-    )
-
-
-@pytest.fixture
-async def auth_headers(access_token):
-    """Provides a method to create an auth header"""
-    return {"Authorization": f"Bearer {access_token}"}
-
-
-@pytest.fixture
-async def expired_access_token():
-    """Provides an expired access token to test failing cases."""
-
-    email = "user@example.com"
-    return oauth2.create_access_token(
-        data={
-            "sub": email,
-            "email": email,
-            "first_name": "Fname",
-            "last_name": "Lname",
-            "user_id": str(uuid4()),
-        },
-        expire_mins=-1,
-    )
-
-
-@pytest.fixture
-async def expired_auth_headers(expired_access_token):
-    """Provides an expired auth header to test failing cases."""
-
-    return {"Authorization": f"Bearer {expired_access_token}"}
-
-
-@pytest.fixture
 async def create_accounts(db_session):
     """Provides a method to create multiple accounts"""
 
