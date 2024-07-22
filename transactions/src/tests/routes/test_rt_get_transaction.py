@@ -12,7 +12,7 @@ from httpx import AsyncClient
 from sqlalchemy import select
 
 from src.common.crud import create_multiple
-from src.common.database import get_db
+from src.common.ctx.api_context import ApiContext
 from src.constants.transaction_statuses import TransactionStatuses
 from src.db.models.db_transaction import DbTransaction
 
@@ -64,7 +64,7 @@ async def test_retrieve_success(
         ]
     )
 
-    async for db in get_db():
+    async for db in ApiContext.get_instance().db_man.get_session():
         query = select(DbTransaction)
         transactions = (await db.execute(query)).scalars().all()
         new_id = transactions[0].id
@@ -100,7 +100,7 @@ async def test_retrieve_fail_for_unauthenticated_user(
         ]
     )
 
-    async for db in get_db():
+    async for db in ApiContext.get_instance().db_man.get_session():
         query = select(DbTransaction)
         transactions = (await db.execute(query)).scalars().all()
         new_id = transactions[0].id
@@ -166,7 +166,7 @@ async def test_retrieve_limited_to_user(
         ]
     )
 
-    async for db in get_db():
+    async for db in ApiContext.get_instance().db_man.get_session():
         query = select(DbTransaction).where(DbTransaction.user_id == another_user_id)
         transactions = (await db.execute(query)).scalars().all()
         another_user_transaction_id = transactions[0].id

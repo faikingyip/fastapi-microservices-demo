@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException, Path, Response, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.common import oauth2
-from src.common.database import get_db
+from src.common.ctx.api_context import ApiContext
 from src.ops import ops_transaction
 from src.schemas.schema_transaction import SchemaTransactionDisplay
 
@@ -23,7 +23,7 @@ async def get_transaction(
     id: UUID = Path(
         default=..., description="The id of the transaction"
     ),  # ... elipses indicates the parameter is required.
-    db: AsyncSession = Depends(get_db),
+    db: AsyncSession = Depends(ApiContext.get_instance().db_man.get_session),
     current_user=Depends(oauth2.get_user_from_access_token),
 ):
     """Gets the transaction with the specified id."""

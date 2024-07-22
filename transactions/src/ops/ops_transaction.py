@@ -6,7 +6,7 @@ from sqlalchemy import Uuid, func, select
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.common.crud import get_object, get_objects
+from src.common.db.crud import get_object, get_objects
 from src.constants.transaction_statuses import TransactionStatuses
 from src.db.models.db_transaction import DbTransaction
 from src.errors import AppServiceError, BusinessValidationError

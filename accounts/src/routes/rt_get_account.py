@@ -1,9 +1,7 @@
-from fastapi import APIRouter, Depends, HTTPException, Response, status
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.common import oauth2
-
-# from src.common.database import get_db
 from src.common.ctx.api_context import ApiContext
 from src.ops import ops_account
 from src.schemas.schema_account import SchemaAccountDisplay

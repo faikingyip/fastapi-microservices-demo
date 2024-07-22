@@ -1,5 +1,3 @@
-import traceback
-
 import psycopg2
 from sqlalchemy.ext import asyncio
 

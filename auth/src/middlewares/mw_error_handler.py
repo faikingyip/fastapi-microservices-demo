@@ -10,7 +10,9 @@ async def handle_error(request: Request, err: Exception):
     """Middleware to capture exceptions and to standardise the
     shape of the response to be sent back to the client."""
 
-    # tb = "".join(traceback.format_exception(type(err), err, err.__traceback__))
+    # tb = "".join(
+    #     traceback.format_exception(type(err), err, err.__traceback__),
+    # )
     # print(tb)
 
     if isinstance(err, CustomError):

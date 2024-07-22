@@ -2,7 +2,7 @@ import time
 
 import pika
 
-from src.common.ctx.rmq_client import RMQClient
+from src.common.rmq.rmq_client import RMQClient
 
 
 class Listener:
@@ -45,9 +45,11 @@ class RMQListenerClient(RMQClient):
                 self.connect()
 
                 # Each consumer will still need its own dedicated queue.
-                # But we don't specify a queue name. Instead we provide an empty string
+                # But we don't specify a queue name.
+                # Instead we provide an empty string
                 # which will let the server decide on a name dynamically.
-                # exclusive=True means the queue can be deleted with the consumer is closed.
+                # exclusive=True means the queue can be
+                # deleted with the consumer is closed.
                 queue = self.channel.queue_declare(
                     queue="", exclusive=True, durable=True
                 )

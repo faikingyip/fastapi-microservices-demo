@@ -2,8 +2,17 @@ import decimal
 import json
 
 
-def create_user_created_message_received_handler(rmq_listener_ctx, ops_account, loop):
-    def on_user_created_message_received_handler(channel, method, properties, body):
+def create_user_created_message_received_handler(
+    rmq_listener_ctx,
+    ops_account,
+    loop,
+):
+    def on_user_created_message_received_handler(
+        channel,
+        method,
+        properties,
+        body,
+    ):
 
         print(f"USER LISTENER: received new message: {body}")
 
@@ -24,8 +33,10 @@ def create_user_created_message_received_handler(rmq_listener_ctx, ops_account, 
     return on_user_created_message_received_handler
 
 
-def create_transaction_created_message_received_handler(
-    rmq_listener_ctx, ops_account, loop
+def create_tran_created_msg_received_hndlr(
+    rmq_listener_ctx,
+    ops_account,
+    loop,
 ):
     def on_transaction_created_message_received_handler(
         channel, method, properties, body

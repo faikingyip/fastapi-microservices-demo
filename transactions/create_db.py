@@ -1,20 +1,20 @@
 import asyncio
 
-from src.app import config_db, db_manager, load_env
-from src.common.database import Base
+from src.app import load_env
+from src.common.ctx.api_context_builder import ApiContextBuilder
+from src.common.db.base import Base
+from src.db.models import db_transaction
 
 
 async def create_db():
     load_env()
-    config_db()
-    async with db_manager.engine.begin() as conn:
-        from src.db.models import db_transaction
-
+    api_ctx = ApiContextBuilder().config_db_man().ensure_db_conn().build()
+    async with api_ctx.db_man.engine.begin() as conn:
         await conn.run_sync(Base.metadata.drop_all)
         await conn.run_sync(Base.metadata.create_all)
 
-    await db_manager.engine.dispose()
+    await api_ctx.db_man.engine.dispose()
 
 
-# if __name__ == "__main__":
-asyncio.run(create_db())
+if __name__ == "__main__":
+    asyncio.run(create_db())

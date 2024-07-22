@@ -5,7 +5,8 @@ import pytest
 from fastapi.testclient import TestClient
 from httpx import AsyncClient
 
-from src.app import app, config_db, load_env
+from src.app import app, load_env
+from src.common.ctx.api_context_builder import ApiContextBuilder
 
 # conftest is run before main.py when you run pytest.
 
@@ -14,15 +15,7 @@ from src.app import app, config_db, load_env
 # removed once testing is completed.
 os.environ["ENV"] = "Testing"
 load_env()
-config_db()
-
-
-# @pytest.fixture(scope="session", autouse=True)
-# async def set_test_env():
-#     load_env()
-#     os.environ["ENV"] = "Testing"
-#     yield
-#     del os.environ["ENV"]
+(ApiContextBuilder().config_db_man().ensure_db_conn().build())
 
 
 @pytest.fixture(scope="session")

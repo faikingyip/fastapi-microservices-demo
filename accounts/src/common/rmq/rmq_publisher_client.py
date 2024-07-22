@@ -1,6 +1,6 @@
 import pika
 
-from src.common.ctx.rmq_client import RMQClient
+from src.common.rmq.rmq_client import RMQClient
 
 
 class RMQPublisherClient(RMQClient):

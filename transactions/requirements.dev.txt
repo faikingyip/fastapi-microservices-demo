@@ -3,3 +3,4 @@ pytest-asyncio
 httpx
 aiosqlite
 requests==2.32.3
+flake8

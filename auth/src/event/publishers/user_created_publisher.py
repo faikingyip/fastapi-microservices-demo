@@ -1,12 +1,12 @@
-from src.common.rabbit_mq import RabbitMQClient
+from src.common.rmq.rmq_publisher_client import RMQPublisherClient
 from src.constants.event_subject import EventSubjects
 
 
 class UserCreatedPublisher:
-    def __init__(self, client: RabbitMQClient):
-        self.client: RabbitMQClient = client
+    def __init__(self, client: RMQPublisherClient):
+        self.client: RMQPublisherClient = client
         self.subject = EventSubjects.USER_CREATED
 
     def publish(self, msg):
-        print("PUBLISHING")
-        self.client.publish(self.subject, msg)
+        with self.client:
+            self.client.publish(self.subject, msg)

@@ -7,7 +7,9 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="http://localhost:8000/api/users/signin")
+oauth2_scheme = OAuth2PasswordBearer(
+    tokenUrl="http://localhost:8000/api/users/signin",
+)
 
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
@@ -22,7 +24,8 @@ def create_access_token(
     expires_delta: Optional[timedelta] = None,
     expire_mins=ACCESS_TOKEN_EXPIRE_MINUTES,
 ):
-    """Creates an access token and encodes it using a secret key and signature."""
+    """Creates an access token and encodes it
+    using a secret key and signature."""
     to_encode = data.copy()
     if expires_delta:
         expire = datetime.datetime.now(datetime.timezone.utc) + expires_delta
@@ -50,7 +53,11 @@ async def get_user_from_access_token(token: str = Depends(oauth2_scheme)):
     This is used as part of verifying the token."""
 
     try:
-        payload = jwt.decode(token, _get_secret_key(), algorithms=[ALGORITHM])
+        payload = jwt.decode(
+            token,
+            _get_secret_key(),
+            algorithms=[ALGORITHM],
+        )
         email: str = payload.get("sub")
         if not email:
             raise _build_http_exc_401("Invalid access token")
@@ -61,9 +68,13 @@ async def get_user_from_access_token(token: str = Depends(oauth2_scheme)):
         last_name: str = payload.get("last_name")
         user_id: str = payload.get("user_id")
     except jwt.ExpiredSignatureError as ese:
-        raise _build_http_exc_401(detail="The access token has expired") from ese
+        raise _build_http_exc_401(
+            detail="The access token has expired",
+        ) from ese
     except JWTError as jwt_err:
-        raise _build_http_exc_401("Invalid access token") from jwt_err
+        raise _build_http_exc_401(
+            "Invalid access token",
+        ) from jwt_err
 
     return {
         "id": user_id,

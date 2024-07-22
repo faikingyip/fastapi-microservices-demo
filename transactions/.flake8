@@ -4,3 +4,5 @@ exclude =
     __pycache__,
     build,
     dist
+    venv,
+    alembic/versions

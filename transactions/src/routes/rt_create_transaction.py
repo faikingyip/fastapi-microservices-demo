@@ -4,8 +4,7 @@ from fastapi import APIRouter, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.common import oauth2
-from src.common.database import get_db
-from src.common.rabbit_mq import get_rmq
+from src.common.ctx.api_context import ApiContext
 from src.event.publishers.transaction_created_publisher import (
     TransactionCreatedPublisher,
 )
@@ -26,8 +25,8 @@ router = APIRouter(prefix="/api/transactions", tags=["transactions"])
 )
 async def create_transaction(
     request: SchemaTransactionCreate,
-    db: AsyncSession = Depends(get_db),
-    rmq_cli=Depends(get_rmq),
+    db: AsyncSession = Depends(ApiContext.get_instance().db_man.get_session),
+    rmq_cli=Depends(ApiContext.get_instance().rmq_pub_client.get_rmq_pub_client),
     current_user=Depends(oauth2.get_user_from_access_token),
 ):
     tran = await ops_transaction.create_transaction(

@@ -17,7 +17,7 @@ from fastapi import status
 from httpx import AsyncClient
 
 from src.app import db_manager
-from src.common.database import Base
+from src.common.db.base import Base
 
 
 async def setup():

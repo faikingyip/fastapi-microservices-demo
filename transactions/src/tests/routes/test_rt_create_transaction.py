@@ -17,8 +17,8 @@ from httpx import AsyncClient
 from sqlalchemy import select
 
 from src.common import oauth2
-from src.common.crud import create_multiple
-from src.common.database import get_db
+from src.common.ctx.api_context import ApiContext
+from src.common.db.crud import create_multiple
 from src.constants.transaction_statuses import TransactionStatuses
 from src.db.models.db_transaction import DbTransaction
 from src.errors import BusinessValidationError
@@ -203,6 +203,7 @@ async def test_multiple_increments_version_number(
     async_client: AsyncClient,
     access_token,
     auth_headers,
+    db_session,
 ):
     """Create multiple increments version number."""
 
@@ -226,7 +227,7 @@ async def test_multiple_increments_version_number(
 
     current_user = await oauth2.get_user_from_access_token(access_token)
 
-    async for db in get_db():
+    async for db in ApiContext.get_instance().db_man.get_session():
         query = (
             select(DbTransaction)
             .where(DbTransaction.user_id == current_user["id"])
@@ -299,7 +300,7 @@ async def test_create_version_number_starts_again_for_new_user(
         headers=another_auth_headers,
     )
 
-    async for db in get_db():
+    async for db in ApiContext.get_instance().db_man.get_session():
         query = select(DbTransaction).order_by("created_on", "version")
         results = await db.execute(query)
         trans = results.scalars().all()

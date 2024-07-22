@@ -4,7 +4,7 @@ from typing import Optional
 from fastapi import APIRouter, Depends, Query, Response, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.common.database import get_db
+from src.common.ctx.api_context import ApiContext
 from src.ops import ops_transaction
 from src.schemas.schema_transaction import SchemaTransactionsDisplay
 
@@ -43,7 +43,7 @@ async def get_transactions(
         le=100,
     ),
     sort_type: TransactionDisplaySortTypes = TransactionDisplaySortTypes.Created_on,
-    db: AsyncSession = Depends(get_db),
+    db: AsyncSession = Depends(ApiContext.get_instance().db_man.get_session),
 ):
 
     sort_by = (

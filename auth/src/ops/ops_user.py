@@ -75,7 +75,11 @@ async def get_user_by_email(db: AsyncSession, email: str):
         ) from sqlae
 
 
-# async def change_password(db: AsyncSession, user_id, request: SchemaChangePassword):
+# async def change_password(
+#     db: AsyncSession,
+#     user_id,
+#     request: SchemaChangePassword,
+# ):
 #     stmt = (
 #         update(DbUser)
 #         .where(DbUser.id == user_id)
@@ -94,7 +98,10 @@ async def get_user_by_email(db: AsyncSession, email: str):
 
 
 # async def get_users(
-#     db: AsyncSession, page_index: int, page_size: int, sort_by: str = Query(None)
+#     db: AsyncSession,
+#     page_index: int,
+#     page_size: int,
+#     sort_by: str = Query(None),
 # ):
 #     query = select(DbUser)
 #     query = apply_sorting_and_paging_to_list_query(

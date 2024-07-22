@@ -1,19 +1,14 @@
-import traceback
-
 import psycopg2
-from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
-from sqlalchemy.orm import DeclarativeBase
-
-
-class Base(DeclarativeBase):
-    pass
+from sqlalchemy.ext import asyncio
 
 
 class DbManager:
+    """Manages connections to the database."""
+
     def __init__(self):
         self.db_url = None
         self.engine = None
-        self.SessionLocal = None
+        self.session_local = None
 
         self.db_host = None
         self.db_port = None
@@ -31,18 +26,20 @@ class DbManager:
         self.db_user = db_user
         self.db_pass = db_pass
 
-        self.engine = create_async_engine(
+        self.engine = asyncio.create_async_engine(
             self.db_url,
             # echo=True,
         )
 
-        self.SessionLocal = async_sessionmaker(
+        self.session_local = asyncio.async_sessionmaker(
             autocommit=False,
             autoflush=False,
             bind=self.engine,
         )
 
     def check_conn(self):
+        """Checks the connection to the database.
+        Check is performed in sync mode."""
         try:
             conn = psycopg2.connect(
                 host=self.db_host,
@@ -59,13 +56,9 @@ class DbManager:
         except Exception:
             return False
 
-
-db_manager = DbManager()
-
-
-async def get_db():
-    async with db_manager.SessionLocal() as db:
-        try:
-            yield db
-        finally:
-            await db.close()
+    async def get_session(self):
+        async with self.session_local() as db:
+            try:
+                yield db
+            finally:
+                await db.close()

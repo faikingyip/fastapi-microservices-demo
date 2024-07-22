@@ -31,11 +31,17 @@ def _apply_paging(query, page_index: int, page_size: int):
 
 
 def apply_sorting_and_paging_to_list_query(
-    query, entity_type, page_index: int, page_size: int, sort_by: str = Query(None)
+    query,
+    entity_type,
+    page_index: int,
+    page_size: int,
+    sort_by: str = Query(None),
 ):
     """entity_type: This is the class reference
     to the entity that extends DeclarativeBase"""
 
     return _apply_paging(
-        _apply_sorting_criteria(query, entity_type, sort_by), page_index, page_size
+        _apply_sorting_criteria(query, entity_type, sort_by),
+        page_index,
+        page_size,
     )

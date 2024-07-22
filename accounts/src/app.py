@@ -1,5 +1,5 @@
 """This module sets up the FasiAPI application that are common to
-the various initiation channels. Initiation channels include the 
+the various initiation channels. Initiation channels include the
 main.py, create_db.py, alembic env.py, and pytest. Each of these
 initiation channels can subsequently perform tasks specific to
 their area."""
@@ -61,6 +61,10 @@ app.middleware("http")(mw_req_duration.request_duration)
 
 # app.add_middleware(LoggingMiddleware)
 
-# app.mount("/d_content", StaticFiles(directory="src/d_content"), name="d_content")
+# app.mount(
+#     "/d_content",
+#     StaticFiles(directory="src/d_content"),
+#     name="d_content",
+# )
 
 # return app

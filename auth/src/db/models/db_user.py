@@ -1,7 +1,8 @@
 from sqlalchemy import String, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column
+
+from src.common.db.db_base import DbBase
 from src.constants.field_lengths import FieldLengths
-from src.db.models.db_base import DbBase
 
 
 class DbUser(DbBase):

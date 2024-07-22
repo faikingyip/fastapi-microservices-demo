@@ -3,7 +3,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src import oauth2
-from src.common.database import get_db
+from src.common.ctx.api_context import ApiContext
 from src.errors import UnauthorizedError
 from src.ops import ops_user
 from src.utils import hash as h
@@ -23,7 +23,7 @@ router = APIRouter(prefix="/api/users", tags=["users"])
 async def signin(
     # response: Response,
     request: OAuth2PasswordRequestForm = Depends(),
-    db: AsyncSession = Depends(get_db),
+    db: AsyncSession = Depends(ApiContext.get_instance().db_man.get_session),
 ):
     user = await ops_user.get_user_by_email(db, request.username)
     if not user:
