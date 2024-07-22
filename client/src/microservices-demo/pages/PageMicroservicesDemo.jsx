@@ -1,6 +1,6 @@
 // import FormAddSkillExp from "../forms/FormAddSkillExp";
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 // import LiSkill from "../list-item/LiSkill";
 import classes from "./PageMicroservicesDemo.module.css";
@@ -9,7 +9,8 @@ import { queryAccount } from "../../tanstackqfns/query-account";
 import FormCreateTrans, { formModes } from "../forms/FormCreateTrans";
 
 export default function PageMicroservicesDemo() {
-  const [showModal, setShowShowModal] = useState(false);
+  // const [showModal, setShowShowModal] = useState(false);
+  const queryClient = useQueryClient();
 
   const accountUseQuery = useQuery({
     queryKey: ["account"],
@@ -17,8 +18,14 @@ export default function PageMicroservicesDemo() {
     staleTime: 10000,
   });
 
-  function handleOnCloseModal() {
-    setShowShowModal(false);
+  // function handleOnCloseModal() {
+  //   setShowShowModal(false);
+  // }
+
+  function onSubmissionCompleted() {
+    queryClient.invalidateQueries({
+      queryKey: ["account"],
+    });
   }
 
   let contentAccountBindings;
@@ -48,6 +55,7 @@ export default function PageMicroservicesDemo() {
         </h2>
         <div>
           <FormCreateTrans
+            onSubmissionCompleted={onSubmissionCompleted}
             buttonText="Deposit"
             buttonTextSubmitting="Depositing"
             mode={formModes.DEPOSIT}
@@ -61,6 +69,7 @@ export default function PageMicroservicesDemo() {
         </h2>
         <div>
           <FormCreateTrans
+            onSubmissionCompleted={onSubmissionCompleted}
             buttonText="Withdraw"
             buttonTextSubmitting="Withdrawing"
             mode={formModes.WITHDRAW}
@@ -68,21 +77,13 @@ export default function PageMicroservicesDemo() {
         </div>
       </section>
 
-      {showModal && (
+      {/* {showModal && (
         <Modal onClose={handleOnCloseModal}>
           <div className={`form-container`}>
             <h2 className={`form-title`}>Add a tech experience</h2>
-            {/* <FormAddSkillExp
-                skills={techs.data}
-                onCancelClick={handleBindTechnologyOnCancelClick}
-                onSuccess={handleOnTechKnowedgeCreationSuccess}
-                chooseSkillLabel="Which tech have you used?"
-                yearOfExposureLabel="What year did you start working with this skill?"
-                monthsOfPracticeLabel="How many solid months of practice have you had since you were first exposed to the skill?"
-              /> */}
           </div>
         </Modal>
-      )}
+      )} */}
     </>
   );
 }

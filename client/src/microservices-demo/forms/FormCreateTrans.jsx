@@ -48,6 +48,7 @@ export default function FormCreateTrans({
   buttonText,
   buttonTextSubmitting,
   mode,
+  onSubmissionCompleted
 }) {
   const [showModal, setShowModal] = useState(false);
   const [processingStatus, setProcessingStatus] = useState(
@@ -110,14 +111,13 @@ export default function FormCreateTrans({
   }
 
   function handleCloseClick() {
+    if (onSubmissionCompleted) {
+      onSubmissionCompleted()
+    }
     setShowModal(false);
     form.reset();
   }
 
-  function handleOKClick() {
-    setShowModal(false);
-    form.reset();
-  }
 
   return (
     <>
@@ -148,7 +148,7 @@ export default function FormCreateTrans({
           <div className={`form-container`}>
             <h2 className={`form-title`}>{processingStatus}</h2>
             {processingStatus !== tranProcessingStatuses.PROCESSING && (
-              <button onClick={handleOKClick}>OK</button>
+              <button onClick={handleCloseClick}>OK</button>
             )}
           </div>
         </Modal>
