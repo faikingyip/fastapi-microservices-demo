@@ -26,6 +26,7 @@ load_env()
 def start_rmq_listener():
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
+
     (
         rmqlcb.RMQListenerContextBuilder()
         .config_db_man()
@@ -45,8 +46,10 @@ def start_rmq_listener():
                 ),
             ],
         )
+        .config_rmq_pub_client()
         .ensure_db_conn()
         .ensure_rmq_listener_client_conn()
+        .ensure_rmq_pub_client_conn()
         .build()
         .rmq_listener_client.listen()
     )

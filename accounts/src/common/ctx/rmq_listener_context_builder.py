@@ -27,12 +27,22 @@ class RMQListenerContextBuilder:
         )
         return self
 
+    def config_rmq_pub_client(self):
+        RMQListenerContextComponentFactory().config_rmq_pub_client(
+            self.rmq_listener_ctx.rmq_pub_client
+        )
+        return self
+
     def ensure_db_conn(self):
         self.rmq_listener_ctx.ensure_db_conn()
         return self
 
     def ensure_rmq_listener_client_conn(self):
         self.rmq_listener_ctx.ensure_rmq_listener_client_conn()
+        return self
+
+    def ensure_rmq_pub_client_conn(self):
+        self.rmq_listener_ctx.ensure_rmq_pub_client_conn()
         return self
 
     def build(self):

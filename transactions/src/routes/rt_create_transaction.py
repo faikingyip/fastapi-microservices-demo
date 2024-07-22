@@ -43,6 +43,7 @@ async def create_transaction(
                     "version": tran.version,
                     "amount": str(tran.amount),
                     "status": tran.status,
+                    "transaction_id": str(tran.id),
                 }
             )
         )

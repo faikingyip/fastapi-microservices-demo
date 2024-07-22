@@ -1,6 +1,10 @@
 import decimal
 import json
 
+from src.common.ctx.rmq_listener_context import RMQListenerContext
+from src.constants.transaction_statuses import TransactionStatuses
+from src.event.publishers.transaction_created_publisher import AccountUpdatedPublisher
+
 
 def create_user_created_message_received_handler(
     rmq_listener_ctx,
@@ -34,7 +38,7 @@ def create_user_created_message_received_handler(
 
 
 def create_tran_created_msg_received_hndlr(
-    rmq_listener_ctx,
+    rmq_listener_ctx: RMQListenerContext,
     ops_account,
     loop,
 ):
@@ -45,10 +49,11 @@ def create_tran_created_msg_received_hndlr(
         print(f"TRANS LISTENER: received new message: {body}")
 
         async def call_update_account():
+            req = json.loads(body)
+            print(req)
             async with rmq_listener_ctx.db_man.session_local() as db:
                 try:
-                    req = json.loads(body)
-                    return await ops_account.update_account(
+                    account = await ops_account.update_account(
                         db,
                         user_id=req["user_id"],
                         request={
@@ -58,6 +63,21 @@ def create_tran_created_msg_received_hndlr(
                     )
                 finally:
                     await db.close()
+
+            with rmq_listener_ctx.rmq_pub_client as client:
+                AccountUpdatedPublisher(client).publish(
+                    json.dumps(
+                        {
+                            "user_id": str(account.user_id),
+                            "balance": str(account.balance),
+                            "version": account.version,
+                            "transaction_id": str(req["transaction_id"]),
+                            "status": TransactionStatuses.COMPLETED.value,
+                        }
+                    )
+                )
+
+            print("PUBLISHED IT!!!")
 
         loop.run_until_complete(call_update_account())
 

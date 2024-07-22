@@ -1,7 +1,7 @@
 from typing import Any, Dict
 
 from asyncpg import UniqueViolationError
-from fastapi import Query
+from fastapi import HTTPException, Query
 from sqlalchemy import Uuid, func, select
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -80,6 +80,57 @@ async def create_transaction(
         ) from sqlae
 
     return new_record
+
+
+async def update_transaction(
+    db: AsyncSession,
+    transaction_id,
+    request,
+):
+    """Updates the status of
+    the transaction only."""
+
+    try:
+        status = request["status"]
+
+        result = await db.execute(
+            select(DbTransaction).filter(DbTransaction.id == transaction_id)
+        )
+
+        tran = result.scalars().first()
+
+        if tran is None:
+            raise HTTPException(
+                status_code=404,
+                detail="Item not found",
+            )
+
+        if status not in [
+            TransactionStatuses.COMPLETED.value,
+            TransactionStatuses.DECLINED.value,
+        ]:
+            e = BusinessValidationError()
+            e.add_error(
+                "invalid_status",
+                (
+                    "The status can only be set to COMPLETED ",
+                    f"{TransactionStatuses.COMPLETED.value} or ",
+                    f"DECLINED {TransactionStatuses.DECLINED.value}.",
+                ),
+                None,
+            )
+            raise e
+
+        tran.status = status
+        await db.commit()
+        await db.refresh(tran)
+        return tran
+    except SQLAlchemyError as sqlae:
+        await db.rollback()
+        raise AppServiceError(
+            "Failed to update a transaction.",
+            {"msg": str(sqlae)},
+        ) from sqlae
 
 
 async def get_transactions(

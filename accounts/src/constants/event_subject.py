@@ -6,3 +6,4 @@ class EventSubjects(str, Enum):
 
     USER_CREATED = "user:created"
     TRANSACTION_CREATED = "transaction:created"
+    ACCOUNT_UPDATED = "account:updated"

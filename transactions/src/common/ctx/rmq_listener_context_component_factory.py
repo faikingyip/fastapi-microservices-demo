@@ -2,6 +2,7 @@ import os
 
 from src.common.db.db_manager import DbManager
 from src.common.rmq.rmq_listener_client import Listener, RMQListenerClient
+from src.common.rmq.rmq_publisher_client import RMQPublisherClient
 
 
 class RMQListenerContextComponentFactory:
@@ -44,3 +45,22 @@ class RMQListenerContextComponentFactory:
         )
         rmq_listener_client.set_listeners(listeners)
         return rmq_listener_client
+
+    def config_rmq_pub_client(self, rmq_pub_client: RMQPublisherClient):
+        """Sets up the RMQ Publishing Client, required
+        for connecting to RMQ for publishing
+        notifications."""
+        rmq_host = os.environ.get("RABBITMQ_HOST")
+        rmq_port = os.environ.get("RABBITMQ_PORT")
+        rmq_user = os.environ.get("RABBITMQ_USER")
+        rmq_pass = os.environ.get("RABBITMQ_PASS")
+        exch_name = os.environ.get("RABBITMQ_EXHCANGE_NAME")
+        # rmq_pub_client = RMQPublisherClient()
+        rmq_pub_client.setup(
+            rmq_host,
+            rmq_port,
+            rmq_user,
+            rmq_pass,
+            exch_name,
+        )
+        return rmq_pub_client
