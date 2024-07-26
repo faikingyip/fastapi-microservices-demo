@@ -10,8 +10,8 @@ from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from src.middlewares import mw_error_handler, mw_req_duration
-from src.routes import rt_refresh, rt_signin, rt_signup, rt_user
+from src.auth import entrypoints
+from src.middlewares import mw_req_duration
 
 
 def load_env():
@@ -41,10 +41,10 @@ def load_env():
 
 
 app = FastAPI(title="FastAPI Microservices Demo - Auth service")
-app.include_router(rt_signup.router)
-app.include_router(rt_signin.router)
-app.include_router(rt_refresh.router)
-app.include_router(rt_user.router)
+app.include_router(entrypoints.signup.router)
+app.include_router(entrypoints.signin.router)
+app.include_router(entrypoints.refresh.router)
+app.include_router(entrypoints.user.router)
 
 
 # Configure logging
@@ -60,10 +60,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.add_exception_handler(
-    Exception,
-    mw_error_handler.handle_error,
-)
+# app.add_exception_handler(
+#     Exception,
+#     mw_error_handler.handle_error,
+# )
 
 app.middleware("http")(mw_req_duration.request_duration)
 

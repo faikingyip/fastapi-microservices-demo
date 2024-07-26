@@ -2,11 +2,9 @@ from typing import Any, Dict
 
 from fastapi import Query
 from sqlalchemy import func, select
-from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.common.db import query_paging_utils as qp
-from src.errors import AppServiceError
 
 
 async def create_multiple(
@@ -37,27 +35,13 @@ async def get_objects(
         query, model_class, page_index, page_size, sort_by
     )
 
-    total_items = 0
-    try:
-        total_items_result = await db.execute(
-            select(func.count(model_class.id)),
-        )
-        total_items = total_items_result.scalar_one()
-    except SQLAlchemyError as sqlae:
-        raise AppServiceError(
-            "Failed to get objects.",
-            {"msg": str(sqlae)},
-        ) from sqlae
+    total_items_result = await db.execute(
+        select(func.count(model_class.id)),
+    )
+    total_items = total_items_result.scalar_one()
 
-    objects = None
-    try:
-        results = await db.execute(query)
-        objects = results.scalars().all()
-    except SQLAlchemyError as sqlae:
-        raise AppServiceError(
-            "Failed to get objects.",
-            {"msg": str(sqlae)},
-        ) from sqlae
+    results = await db.execute(query)
+    objects = results.scalars().all()
 
     return {
         "items": objects,
@@ -66,18 +50,3 @@ async def get_objects(
         "total_items": total_items,
         "items_in_page": len(objects),
     }
-
-
-async def get_object(
-    db: AsyncSession,
-    query: Query,
-):
-    """Pass in a query to return a single object.
-    Query i.e. select(DbItem).where(DbItem.id == id)"""
-    try:
-        return (await db.execute(query)).scalar_one_or_none()
-    except SQLAlchemyError as sqlae:
-        raise AppServiceError(
-            "Failed to get an object.",
-            {"msg": str(sqlae)},
-        ) from sqlae

@@ -11,12 +11,11 @@ import pytest
 from fastapi import status
 from httpx import AsyncClient
 
+# from src.common.database import get_db
+from src.accounts.domain import models
 from src.common import oauth2
 from src.common.ctx.api_context import ApiContext
 from src.common.db.crud import create_multiple
-
-# from src.common.database import get_db
-from src.db.models.db_account import DbAccount
 from src.ops import ops_account
 
 LIST_URL = "/api/accounts/"
@@ -33,7 +32,7 @@ async def create_accounts(db_session):
 
     async def _create_accounts(accounts_data):
         return await create_multiple(
-            DbAccount,
+            models.Account,
             accounts_data,
             db_session,
         )

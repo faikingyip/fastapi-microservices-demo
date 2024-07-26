@@ -10,8 +10,8 @@ from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from src.accounts import entrypoints
 from src.middlewares import mw_error_handler, mw_req_duration
-from src.routes import rt_get_account
 
 
 def load_env():
@@ -37,7 +37,7 @@ def load_env():
 
 
 app = FastAPI(title="FastAPI Microservices Demo - Accounts service")
-app.include_router(rt_get_account.router)
+app.include_router(entrypoints.get_account.router)
 
 # Configure logging
 # configure_logging()

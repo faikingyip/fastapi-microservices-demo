@@ -48,3 +48,7 @@ class ApiContext:
         if not ApiContext.instance:
             ApiContext.instance = ApiContext()
         return ApiContext.instance
+
+    @staticmethod
+    async def get_instance_async():
+        return ApiContext.get_instance()

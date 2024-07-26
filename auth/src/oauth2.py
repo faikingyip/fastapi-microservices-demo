@@ -3,13 +3,13 @@ import os
 from datetime import timedelta
 from typing import Optional
 
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
-from sqlalchemy.ext.asyncio import AsyncSession
 
+from src.auth.srv_layer import services
+from src.auth.srv_layer.uow import SqlAlchemyUoW
 from src.common.ctx.api_context import ApiContext
-from src.ops import ops_user
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/users/signin")
 
@@ -31,11 +31,16 @@ def create_access_token(
     using a secret key and signature."""
     to_encode = data.copy()
     if expires_delta:
-        expire = datetime.datetime.now(datetime.timezone.utc) + expires_delta
-    else:
-        expire = datetime.datetime.now(datetime.timezone.utc) + timedelta(
-            minutes=expire_mins
+        expire = (
+            datetime.datetime.now(
+                datetime.timezone.utc,
+            )
+            + expires_delta
         )
+    else:
+        expire = datetime.datetime.now(
+            datetime.timezone.utc,
+        ) + timedelta(minutes=expire_mins)
     to_encode.update({"exp": expire, "token_type": "access"})
     encoded_jwt = jwt.encode(
         to_encode,
@@ -54,11 +59,16 @@ def create_refresh_token(
     using a secret key and signature."""
     to_encode = data.copy()
     if expires_delta:
-        expire = datetime.datetime.now(datetime.timezone.utc) + expires_delta
-    else:
-        expire = datetime.datetime.now(datetime.timezone.utc) + timedelta(
-            minutes=expire_mins
+        expire = (
+            datetime.datetime.now(
+                datetime.timezone.utc,
+            )
+            + expires_delta
         )
+    else:
+        expire = datetime.datetime.now(
+            datetime.timezone.utc,
+        ) + timedelta(minutes=expire_mins)
     to_encode.update({"exp": expire, "token_type": "refresh"})
     encoded_jwt = jwt.encode(
         to_encode,
@@ -78,34 +88,24 @@ def decode_refresh_token(encoded_jwt):
         )
         email = payload.get("sub")
         if not email:
-            raise _build_http_exc_401("Invalid refresh token")
+            raise services.build_http_exc_401("Invalid refresh token")
             # raise UnauthorizedError("Invalid refresh token")
         token_type = payload.get("token_type")
         if token_type != "refresh":
-            raise _build_http_exc_401("Invalid refresh token")
+            raise services.build_http_exc_401("Invalid refresh token")
             # raise UnauthorizedError("Invalid refresh token")
         return payload
     except jwt.ExpiredSignatureError as ese:
-        raise _build_http_exc_401("The refresh token has expired") from ese
+        raise services.build_http_exc_401("The refresh token has expired") from ese
         # raise UnauthorizedError("The refresh token has expired") from ese
     except JWTError as jwt_err:
-        raise _build_http_exc_401("Invalid refresh token") from jwt_err
+        raise services.build_http_exc_401("Invalid refresh token") from jwt_err
         # raise UnauthorizedError("Invalid refresh token") from jwt_err
-
-
-def _build_http_exc_401(
-    detail,
-):
-    return HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail=detail,
-        headers={"WWW-Authenticate": "Bearer"},
-    )
 
 
 def get_current_user(
     token: str = Depends(oauth2_scheme),
-    db: AsyncSession = Depends(ApiContext.get_instance().db_man.get_session),
+    api_ctx: ApiContext = Depends(ApiContext.get_instance_async),
 ):
     """Gets the currently authenticated user. This is used as part of
     verifying the token."""
@@ -114,22 +114,21 @@ def get_current_user(
         payload = jwt.decode(token, _get_secret_key(), algorithms=[ALGORITHM])
         email: str = payload.get("sub")
         if not email:
-            raise _build_http_exc_401("Invalid access token")
-            # raise UnauthorizedError("Invalid access token")
+            raise services.build_http_exc_401("Invalid access token")
         token_type = payload.get("token_type")
         if token_type != "access":
-            raise _build_http_exc_401("Invalid access token")
-            # raise UnauthorizedError("Invalid access token")
+            raise services.build_http_exc_401("Invalid access token")
     except jwt.ExpiredSignatureError as ese:
-        raise _build_http_exc_401(
+        raise services.build_http_exc_401(
             detail="The access token has expired",
         ) from ese
-        # raise UnauthorizedError("The access token has expired") from ese
     except JWTError as jwt_err:
-        raise _build_http_exc_401("Invalid access token") from jwt_err
-        # raise UnauthorizedError("Invalid access token") from jwt_err
+        raise services.build_http_exc_401("Invalid access token") from jwt_err
 
-    user_coroutine = ops_user.get_user_by_email(db, email)
+    user_coroutine = services.get_by_email(
+        email,
+        SqlAlchemyUoW(api_ctx.db_man.session_local),
+    )
     if not user_coroutine:
-        raise _build_http_exc_401("Invalid access token")
+        raise services.build_http_exc_401("Invalid access token")
     return user_coroutine

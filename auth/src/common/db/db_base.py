@@ -7,10 +7,7 @@ from sqlalchemy.sql import func
 
 from src.common.db.base import Base
 
-# from sqlalchemy.ext.asyncio import AsyncAttrs
 
-
-# class DbBase(AsyncAttrs, Base):
 class DbBase(Base):
     __abstract__ = True
     id: Mapped[UUID] = mapped_column(primary_key=True, default=uuid4)

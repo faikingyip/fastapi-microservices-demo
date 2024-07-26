@@ -1,9 +1,9 @@
 import asyncio
 
 from src.app import load_env
+from src.auth.domain import models
 from src.common.ctx.api_context_builder import ApiContextBuilder
 from src.common.db.base import Base
-from src.db.models import db_user
 
 
 async def create_db():

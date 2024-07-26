@@ -4,8 +4,8 @@ from sqlalchemy import Uuid, select
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from src.accounts.domain import models
 from src.common.db.crud import get_object
-from src.db.models.db_account import DbAccount
 from src.errors import AppServiceError, BusinessValidationError
 
 
@@ -14,7 +14,7 @@ async def create_account(
     user_id,
 ):
 
-    new_record = DbAccount(
+    new_record = models.Account(
         user_id=user_id,
         balance=0,
         version=0,
@@ -56,17 +56,8 @@ async def update_account(
         amount = request["amount"]
         version = request["version"]
 
-        if amount == 0:
-            e = BusinessValidationError()
-            e.add_error(
-                "invalid_amount",
-                "The amount cannot be 0.",
-                None,
-            )
-            raise e
-
         result = await db.execute(
-            select(DbAccount).filter(DbAccount.user_id == user_id)
+            select(models.Account).filter(models.Account.user_id == user_id)
         )
 
         account = result.scalars().first()
@@ -76,6 +67,15 @@ async def update_account(
                 status_code=404,
                 detail="Item not found",
             )
+
+        if amount == 0:
+            e = BusinessValidationError()
+            e.add_error(
+                "invalid_amount",
+                "The amount cannot be 0.",
+                None,
+            )
+            raise e
 
         if (account.version + 1) != version:
             e = BusinessValidationError()
@@ -114,7 +114,7 @@ async def update_account(
 async def get_account_by_user(db: AsyncSession, user_id: Uuid):
     return await get_object(
         db,
-        select(DbAccount).where(
-            DbAccount.user_id == user_id,
+        select(models.Account).where(
+            models.Account.user_id == user_id,
         ),
     )

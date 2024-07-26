@@ -1,6 +1,7 @@
 import decimal
 import json
 
+from src.accounts.srv_layer import services
 from src.common.ctx.rmq_listener_context import RMQListenerContext
 from src.constants.transaction_statuses import TransactionStatuses
 from src.event.publishers.transaction_created_publisher import AccountUpdatedPublisher
