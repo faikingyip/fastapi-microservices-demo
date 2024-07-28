@@ -2,7 +2,6 @@ from fastapi import APIRouter, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 
 from src.auth.srv_layer import services
-from src.auth.srv_layer.uow import SqlAlchemyUoW
 from src.common.ctx.api_context import ApiContext
 from src.utils import oauth2
 
@@ -21,7 +20,7 @@ async def signin(
         user = await services.signin(
             req.username,
             req.password,
-            SqlAlchemyUoW(api_ctx.db_man.session_local),
+            api_ctx.uow,
         )
     except services.InvalidCredentialsError as ice:
         raise services.build_http_exc_401(

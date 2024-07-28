@@ -1,7 +1,6 @@
 from fastapi import APIRouter, Depends, status
 
 from src.auth.entrypoints.fastapi import schemas
-from src.auth.srv_layer import services, uow
 from src.common.ctx.api_context import ApiContext
 from src.utils import oauth2
 
@@ -26,7 +25,7 @@ async def get_me(
     """Gets the currently authenticated user."""
     user = await services.get_by_email(
         (await current_user).email,
-        uow.SqlAlchemyUoW(api_ctx.db_man.session_local),
+        api_ctx.uow,
     )
     return user
 

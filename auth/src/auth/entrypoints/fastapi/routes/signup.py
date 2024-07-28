@@ -4,7 +4,6 @@ from fastapi import APIRouter, Depends, status
 
 from src.auth.entrypoints.fastapi import schemas
 from src.auth.srv_layer import services
-from src.auth.srv_layer.uow import SqlAlchemyUoW
 from src.common.ctx.api_context import ApiContext
 from src.event.publishers.user_created_publisher import UserCreatedPublisher
 
@@ -28,7 +27,7 @@ async def signup(
         req.password,
         req.first_name,
         req.last_name,
-        SqlAlchemyUoW(api_ctx.db_man.session_local),
+        api_ctx.uow,
     )
 
     with api_ctx.msg_pub_client:

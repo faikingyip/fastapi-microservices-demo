@@ -1,5 +1,6 @@
 import time
 
+from src.auth.srv_layer.uow import AbstractUoW
 from src.common.ctx.ctx_components import AbstractDbManager, AbstractMsgPublisherClient
 
 
@@ -16,6 +17,7 @@ class ApiContext:
 
     def __init__(self):
         self.db_man: AbstractDbManager = None
+        self.uow: AbstractUoW = None
         self.msg_pub_client: AbstractMsgPublisherClient = None
 
     def ensure_db_conn(self):

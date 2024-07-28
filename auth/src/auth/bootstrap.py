@@ -3,6 +3,7 @@ from typing import Optional
 
 from dotenv import load_dotenv
 
+from src.auth.srv_layer.uow import AbstractUoW
 from src.common.ctx.api_context import ApiContext
 from src.common.ctx.ctx_components import AbstractMsgPublisherClient
 from src.common.db.db_manager import DbManager
@@ -76,11 +77,15 @@ def build_rmq_pub_client():
 
 def bootstrap_api_ctx(
     db_man: DbManager,
+    uow: AbstractUoW,
     msg_pub_client: Optional[AbstractMsgPublisherClient],
 ):
     api_ctx = ApiContext.get_instance()
     api_ctx.db_man = db_man
     api_ctx.ensure_db_conn()
+
+    api_ctx.uow = uow
+
     if msg_pub_client:
         api_ctx.msg_pub_client = msg_pub_client
         api_ctx.ensure_msg_pub_client_conn()

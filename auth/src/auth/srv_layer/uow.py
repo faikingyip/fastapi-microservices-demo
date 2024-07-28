@@ -3,7 +3,6 @@ import abc
 from sqlalchemy.ext import asyncio
 
 from src.auth.adapters import repo
-from src.common.ctx.api_context import ApiContext
 
 
 class AbstractUoW(abc.ABC):
@@ -32,9 +31,6 @@ class AbstractUoW(abc.ABC):
     @abc.abstractmethod
     def expunge(self, record):
         raise NotImplementedError
-
-
-# DEFAULT_SESSION_FACTORY = ApiContext.get_instance().db_man.session_local
 
 
 class SqlAlchemyUoW(AbstractUoW):
