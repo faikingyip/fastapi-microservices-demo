@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 
-from src import oauth2
 from src.auth.srv_layer import services
 from src.auth.srv_layer.uow import SqlAlchemyUoW
 from src.common.ctx.api_context import ApiContext
+from src.utils import oauth2
 
 router = APIRouter(prefix="/api/users", tags=["users"])
 
