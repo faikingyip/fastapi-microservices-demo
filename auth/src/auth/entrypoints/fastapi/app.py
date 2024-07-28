@@ -4,47 +4,17 @@ main.py, create_db.py, alembic env.py, and pytest. Each of these
 initiation channels can subsequently perform tasks specific to
 their area."""
 
-import os
-
-from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from src.auth import entrypoints
+from src.auth.entrypoints.fastapi import routes
 from src.middlewares import mw_req_duration
 
-
-def load_env():
-    """Function to load environment variables from the
-    initiation channels. You need to set the
-    ENV variable (if appropriate), then call this function to
-    load the correct settings."""
-
-    # ENV can be set in places
-    # such as conftest.py for pytest.
-    env = os.environ.get("ENV")
-    print(f"{env=}")
-    if env == "Testing":
-        load_dotenv(".env.test")
-    elif env == "Production":
-        # Do nothing here. Just let
-        # the block exit and load the
-        # already set environments
-        # below.
-        pass
-    else:
-        load_dotenv(".env.dev")
-
-    # Environment variables will either be sourced
-    # from .env files or they will already exist
-    # when building the environment.
-
-
 app = FastAPI(title="FastAPI Microservices Demo - Auth service")
-app.include_router(entrypoints.signup.router)
-app.include_router(entrypoints.signin.router)
-app.include_router(entrypoints.refresh.router)
-app.include_router(entrypoints.user.router)
+app.include_router(routes.signup.router)
+app.include_router(routes.signin.router)
+app.include_router(routes.refresh.router)
+app.include_router(routes.user.router)
 
 
 # Configure logging

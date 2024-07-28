@@ -1,10 +1,38 @@
 import os
 from typing import Optional
 
+from dotenv import load_dotenv
+
 from src.common.ctx.api_context import ApiContext
 from src.common.ctx.ctx_components import AbstractMsgPublisherClient
 from src.common.db.db_manager import DbManager
 from src.common.rmq.rmq_publisher_client import RMQPublisherClient
+
+
+def load_env():
+    """Function to load environment variables from the
+    initiation channels. You need to set the
+    ENV variable (if appropriate), then call this function to
+    load the correct settings."""
+
+    # ENV can be set in places
+    # such as conftest.py for pytest.
+    env = os.environ.get("ENV")
+    print(f"{env=}")
+    if env == "Testing":
+        load_dotenv(".env.test")
+    elif env == "Production":
+        # Do nothing here. Just let
+        # the block exit and load the
+        # already set environments
+        # below.
+        pass
+    else:
+        load_dotenv(".env.dev")
+
+    # Environment variables will either be sourced
+    # from .env files or they will already exist
+    # when building the environment.
 
 
 def build_db_man():

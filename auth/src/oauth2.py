@@ -89,18 +89,14 @@ def decode_refresh_token(encoded_jwt):
         email = payload.get("sub")
         if not email:
             raise services.build_http_exc_401("Invalid refresh token")
-            # raise UnauthorizedError("Invalid refresh token")
         token_type = payload.get("token_type")
         if token_type != "refresh":
             raise services.build_http_exc_401("Invalid refresh token")
-            # raise UnauthorizedError("Invalid refresh token")
         return payload
     except jwt.ExpiredSignatureError as ese:
         raise services.build_http_exc_401("The refresh token has expired") from ese
-        # raise UnauthorizedError("The refresh token has expired") from ese
     except JWTError as jwt_err:
         raise services.build_http_exc_401("Invalid refresh token") from jwt_err
-        # raise UnauthorizedError("Invalid refresh token") from jwt_err
 
 
 def get_current_user(

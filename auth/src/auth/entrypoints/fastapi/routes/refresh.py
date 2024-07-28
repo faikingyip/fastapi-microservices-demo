@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
 from src import oauth2
-from src.auth.entrypoints import schemas
+from src.auth.entrypoints.fastapi import schemas
 from src.auth.srv_layer import services
 
 router = APIRouter(prefix="/api/users", tags=["users"])

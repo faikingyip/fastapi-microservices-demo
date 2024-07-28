@@ -6,7 +6,6 @@ from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
 
 from alembic import context
-from src.app import load_env
 from src.auth import bootstrap
 from src.auth.domain import models
 from src.common.ctx.api_context import ApiContext
@@ -16,7 +15,7 @@ from src.common.db.base import Base
 # access to the values within the .ini file in use.
 config = context.config
 
-load_env()
+bootstrap.load_env()
 
 bootstrap.bootstrap_api_ctx(
     db_man=bootstrap.build_db_man(),
