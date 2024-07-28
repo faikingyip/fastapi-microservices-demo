@@ -16,18 +16,18 @@ import pytest
 from fastapi import status
 from httpx import AsyncClient
 
-from src.app import db_manager
+from src.common.ctx.api_context import ApiContext
 from src.common.db.base import Base
 
 
 async def setup():
-    async with db_manager.engine.begin() as conn:
+    async with ApiContext.get_instance().db_man.engine.begin() as conn:
         await conn.run_sync(Base.metadata.drop_all)
         await conn.run_sync(Base.metadata.create_all)
 
 
 async def teardown():
-    async with db_manager.engine.begin() as conn:
+    async with ApiContext.get_instance().db_man.engine.begin() as conn:
         await conn.run_sync(Base.metadata.drop_all)
 
 
