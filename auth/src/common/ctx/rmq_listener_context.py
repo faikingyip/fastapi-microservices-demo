@@ -19,7 +19,7 @@ class RMQListenerContext:
     def __init__(self):
         self.db_man: DbManager = DbManager()
         self.rmq_listener_client: RMQListenerClient = RMQListenerClient()
-        self.rmq_pub_client: RMQPublisherClient = RMQPublisherClient()
+        self.msg_pub_client: RMQPublisherClient = RMQPublisherClient()
 
     def ensure_db_conn(self):
         db_available = False
@@ -45,12 +45,12 @@ class RMQListenerContext:
                 time.sleep(3)
         print("RMQ LISTENER CLIENT AVAILABLE!")
 
-    def ensure_rmq_pub_client_conn(self):
+    def ensure_msg_pub_client_conn(self):
         rmq_available = False
         print("ENSURING RMQ PUB CLIENT AVAILABLE")
         while not rmq_available:
             try:
-                rmq_available = self.rmq_pub_client.check_conn()
+                rmq_available = self.msg_pub_client.check_conn()
             except Exception:
                 time.sleep(3)
             if not rmq_available:

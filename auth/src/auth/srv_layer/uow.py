@@ -34,13 +34,13 @@ class AbstractUoW(abc.ABC):
         raise NotImplementedError
 
 
-DEFAULT_SESSION_FACTORY = ApiContext.get_instance().db_man.session_local
+# DEFAULT_SESSION_FACTORY = ApiContext.get_instance().db_man.session_local
 
 
 class SqlAlchemyUoW(AbstractUoW):
     def __init__(
         self,
-        session_factory: asyncio.async_sessionmaker = DEFAULT_SESSION_FACTORY,
+        session_factory: asyncio.async_sessionmaker,
     ):
         super().__init__()
         self.session_factory = session_factory

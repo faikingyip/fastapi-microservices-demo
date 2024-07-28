@@ -10,6 +10,7 @@ class RMQClient(ABC):
     related to connection to the RabbitMQ server."""
 
     def __init__(self):
+        super().__init__()
         self.connection = None
         self.channel = None
         self.url = None

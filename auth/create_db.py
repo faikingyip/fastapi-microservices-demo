@@ -1,8 +1,9 @@
 import asyncio
 
 from src.app import load_env
+from src.auth import bootstrap
 from src.auth.domain import models
-from src.common.ctx.api_context_builder import ApiContextBuilder
+from src.common.ctx.api_context import ApiContext
 from src.common.db.base import Base
 
 
@@ -10,7 +11,12 @@ async def create_db():
 
     load_env()
 
-    api_ctx = ApiContextBuilder().config_db_man().ensure_db_conn().build()
+    bootstrap.bootstrap_api_ctx(
+        db_man=bootstrap.build_db_man(),
+        msg_pub_client=None,
+    )
+
+    api_ctx = ApiContext.get_instance()
     async with api_ctx.db_man.engine.begin() as conn:
         await conn.run_sync(Base.metadata.drop_all)
         await conn.run_sync(Base.metadata.create_all)

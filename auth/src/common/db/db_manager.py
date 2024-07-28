@@ -1,11 +1,14 @@
 import psycopg2
 from sqlalchemy.ext import asyncio
 
+from src.common.ctx.ctx_components import AbstractDbManager
 
-class DbManager:
+
+class DbManager(AbstractDbManager):
     """Manages connections to the database."""
 
     def __init__(self):
+        super().__init__()
         self.db_url = None
         self.engine = None
         self.session_local = None

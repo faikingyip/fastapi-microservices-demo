@@ -1,7 +1,6 @@
 import time
 
-from src.common.db.db_manager import DbManager
-from src.common.rmq.rmq_publisher_client import RMQPublisherClient
+from src.common.ctx.ctx_components import AbstractDbManager, AbstractMsgPublisherClient
 
 
 class ApiContext:
@@ -16,8 +15,8 @@ class ApiContext:
     instance = None
 
     def __init__(self):
-        self.db_man: DbManager = DbManager()
-        self.rmq_pub_client: RMQPublisherClient = RMQPublisherClient()
+        self.db_man: AbstractDbManager = None
+        self.msg_pub_client: AbstractMsgPublisherClient = None
 
     def ensure_db_conn(self):
         db_available = False
@@ -31,12 +30,12 @@ class ApiContext:
                 time.sleep(2)
         print("DB AVAILABLE!")
 
-    def ensure_rmq_pub_client_conn(self):
+    def ensure_msg_pub_client_conn(self):
         rmq_available = False
         print("ENSURING RMQ PUB CLIENT AVAILABLE")
         while not rmq_available:
             try:
-                rmq_available = self.rmq_pub_client.check_conn()
+                rmq_available = self.msg_pub_client.check_conn()
             except Exception:
                 time.sleep(3)
             if not rmq_available:

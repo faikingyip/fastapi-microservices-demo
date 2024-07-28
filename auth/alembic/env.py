@@ -7,8 +7,9 @@ from sqlalchemy.ext.asyncio import async_engine_from_config
 
 from alembic import context
 from src.app import load_env
+from src.auth import bootstrap
 from src.auth.domain import models
-from src.common.ctx.api_context_builder import ApiContextBuilder
+from src.common.ctx.api_context import ApiContext
 from src.common.db.base import Base
 
 # this is the Alembic Config object, which provides
@@ -16,8 +17,16 @@ from src.common.db.base import Base
 config = context.config
 
 load_env()
-api_ctx = ApiContextBuilder().config_db_man().ensure_db_conn().build()
-config.set_main_option("sqlalchemy.url", api_ctx.db_man.db_url)
+
+bootstrap.bootstrap_api_ctx(
+    db_man=bootstrap.build_db_man(),
+    msg_pub_client=None,
+)
+
+config.set_main_option(
+    "sqlalchemy.url",
+    ApiContext.get_instance().db_man.db_url,
+)
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.

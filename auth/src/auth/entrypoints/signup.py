@@ -22,9 +22,9 @@ async def signup(
     api_ctx: ApiContext = Depends(
         ApiContext.get_instance_async,
     ),
-    rmq_pub_client=Depends(
-        ApiContext.get_instance().rmq_pub_client.get_rmq_pub_client,
-    ),
+    # msg_pub_client=Depends(
+    #     ApiContext.get_instance().msg_pub_client.get_msg_pub_client,
+    # ),
 ):
     user = await services.signup(
         req.email,
@@ -34,8 +34,8 @@ async def signup(
         SqlAlchemyUoW(api_ctx.db_man.session_local),
     )
 
-    with rmq_pub_client:
-        UserCreatedPublisher(rmq_pub_client).publish(
+    with api_ctx.msg_pub_client:
+        UserCreatedPublisher(api_ctx.msg_pub_client).publish(
             json.dumps(
                 {
                     "user_id": str(user.id),

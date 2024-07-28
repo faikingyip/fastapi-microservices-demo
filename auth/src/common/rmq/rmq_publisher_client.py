@@ -1,17 +1,15 @@
 import pika
 
+from src.common.ctx.ctx_components import AbstractMsgPublisherClient
 from src.common.rmq.rmq_client import RMQClient
 
 
-class RMQPublisherClient(RMQClient):
+class RMQPublisherClient(RMQClient, AbstractMsgPublisherClient):
     """A RMQ client specifically for publishing
     notification messages to the RMQ server.
     This client can run within the ApiContext
     as it does not require an ongoing connection
     to the RMQ server."""
-
-    def __init__(self):
-        super().__init__()
 
     def publish(self, routing_key, message):
         try:
@@ -31,5 +29,5 @@ class RMQPublisherClient(RMQClient):
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.close()
 
-    async def get_rmq_pub_client(self):
+    async def get_msg_pub_client(self):
         return self

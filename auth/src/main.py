@@ -1,15 +1,20 @@
 from src.app import app, load_env
-from src.common.ctx.api_context_builder import ApiContextBuilder
-
-# from src import app
+from src.auth import bootstrap
 
 load_env()
 
-(
-    ApiContextBuilder()
-    .config_db_man()
-    .config_rmq_pub_client()
-    .ensure_db_conn()
-    .ensure_rmq_pub_client_conn()
-    .build()
+
+bootstrap.bootstrap_api_ctx(
+    db_man=bootstrap.build_db_man(),
+    msg_pub_client=bootstrap.build_rmq_pub_client(),
 )
+
+
+# (
+#     ApiContextBuilder()
+#     .config_db_man(DbManager())
+#     .config_msg_pub_client()
+#     .ensure_db_conn()
+#     .ensure_msg_pub_client_conn()
+#     .build()
+# )

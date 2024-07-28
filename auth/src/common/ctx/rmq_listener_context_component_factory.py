@@ -46,7 +46,7 @@ class RMQListenerContextComponentFactory:
         rmq_listener_client.set_listeners(listeners)
         return rmq_listener_client
 
-    def config_rmq_pub_client(self, rmq_pub_client: RMQPublisherClient):
+    def config_msg_pub_client(self, msg_pub_client: RMQPublisherClient):
         """Sets up the RMQ Publishing Client, required
         for connecting to RMQ for publishing
         notifications."""
@@ -55,12 +55,12 @@ class RMQListenerContextComponentFactory:
         rmq_user = os.environ.get("RABBITMQ_USER")
         rmq_pass = os.environ.get("RABBITMQ_PASS")
         exch_name = os.environ.get("RABBITMQ_EXHCANGE_NAME")
-        # rmq_pub_client = RMQPublisherClient()
-        rmq_pub_client.setup(
+        # msg_pub_client = RMQPublisherClient()
+        msg_pub_client.setup(
             rmq_host,
             rmq_port,
             rmq_user,
             rmq_pass,
             exch_name,
         )
-        return rmq_pub_client
+        return msg_pub_client
